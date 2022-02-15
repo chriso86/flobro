@@ -13,5 +13,8 @@ module.exports = {
     'ts-jest': {
       tsconfig: 'tsconfig.json'
     }
-  }
+  },
+  setupFiles: [
+    './config/__mocks__/dom.js'
+  ]
 }
