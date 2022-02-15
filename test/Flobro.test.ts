@@ -23,6 +23,8 @@ import { ILink } from '../src/interfaces/link.interface'
 import { IBlock } from '../src/interfaces/block.interface'
 import { ILinkSocket } from '../src/interfaces/link-socket.interface'
 
+// Current coverage - 62.81% (2022-02-15) - TODO: INCREASE COVERAGE AND UPDATE THIS
+
 const GenerateUUIDSection = (length: number) => {
   let result = ''
   const characters =
