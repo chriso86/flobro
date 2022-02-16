@@ -6,12 +6,12 @@ import {
   DEFAULT_SOCKET_DATA,
   DEFAULT_SOCKET_PARENT,
   DEFAULT_SOCKET_STYLE,
-} from './default.constants'
-import { ICoordinates } from '../interfaces/coordinates.interface'
-import { ILinkSocket } from '../interfaces/link-socket.interface'
-import { ICircleStyle } from '../interfaces/circle-style.interface'
-import { ILink } from '../interfaces/link.interface'
-import { UUID } from '../interfaces/custom-types'
+} from '../utils/default.constants'
+import { ICoordinates } from './interfaces/coordinates.interface'
+import { ILinkSocket } from './interfaces/link-socket.interface'
+import { ICircleStyle } from './interfaces/circle-style.interface'
+import { ILink } from './interfaces/link.interface'
+import { UUID } from './interfaces/custom-types'
 
 export class LinkSocket<T> extends Socket<T> implements ILinkSocket<T> {
   constructor(

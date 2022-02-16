@@ -7,15 +7,15 @@ import {
   DEFAULT_SOCKET_DATA,
   DEFAULT_SOCKET_PARENT,
   DEFAULT_SOCKET_STYLE,
-} from './default.constants'
+} from '../utils/default.constants'
 import { Link } from './link'
-import { LinkFactory } from '../service/link.factory'
-import { IBlock } from '../interfaces/block.interface'
-import { IBlockSocket } from '../interfaces/block-socket.interface'
-import { ICircleStyle } from '../interfaces/circle-style.interface'
-import { ILinkOptions } from '../interfaces/link-options.interface'
-import { ILink } from '../interfaces/link.interface'
-import { Side, UUID } from '../interfaces/custom-types'
+import { LinkFactory } from '../factory/link.factory'
+import { IBlock } from './interfaces/block.interface'
+import { IBlockSocket } from './interfaces/block-socket.interface'
+import { ICircleStyle } from './interfaces/circle-style.interface'
+import { ILinkOptions } from './interfaces/link-options.interface'
+import { ILink } from './interfaces/link.interface'
+import { Side, UUID } from './interfaces/custom-types'
 
 export class BlockSocket<T> extends Socket<T> implements IBlockSocket<T> {
   constructor(

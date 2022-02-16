@@ -1,12 +1,12 @@
-import { Fill } from './fill'
-import { Stroke } from './stroke'
-import { BlockStyle } from './block-style'
-import { CircleStyle } from './circle-style'
-import { Style } from './style'
-import { BlockSocket } from './block.socket'
-import { ILinkSocket } from '../interfaces/link-socket.interface'
-import { ILink } from '../interfaces/link.interface'
-import { UUID } from '../interfaces/custom-types'
+import { Fill } from '../domain/fill'
+import { Stroke } from '../domain/stroke'
+import { BlockStyle } from '../domain/block-style'
+import { CircleStyle } from '../domain/circle-style'
+import { Style } from '../domain/style'
+import { BlockSocket } from '../domain/block.socket'
+import { ILinkSocket } from '../domain/interfaces/link-socket.interface'
+import { ILink } from '../domain/interfaces/link.interface'
+import { UUID } from '../domain/interfaces/custom-types'
 
 /* General Defaults */
 export const DEFAULT_STROKE_WIDTH = 2

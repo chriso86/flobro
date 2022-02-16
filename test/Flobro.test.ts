@@ -11,17 +11,16 @@ import {
   DEFAULT_SOCKET_RADIUS,
   DEFAULT_SOCKET_STROKE_COLOR,
   DEFAULT_SOCKET_STROKE_WIDTH,
-} from '../src/domain/default.constants'
+} from '../src/utils/default.constants'
 import { CircleStyle } from '../src/domain/circle-style'
 import { BlockStyle } from '../src/domain/block-style'
-import { IFill } from '../src/interfaces/fill.interface'
-import { IStroke } from '../src/interfaces/stroke.interface'
+import { IFill } from '../src/domain/interfaces/fill.interface'
+import { IStroke } from '../src/domain/interfaces/stroke.interface'
 import { Style } from '../src/domain/style'
-import { IBlockSocket } from '../src/interfaces/block-socket.interface'
-import { UUID } from '../src/interfaces/custom-types'
-import { ILink } from '../src/interfaces/link.interface'
-import { IBlock } from '../src/interfaces/block.interface'
-import { ILinkSocket } from '../src/interfaces/link-socket.interface'
+import { UUID } from '../src/domain/interfaces/custom-types'
+import { ILink } from '../src/domain/interfaces/link.interface'
+import { IBlock } from '../src/domain/interfaces/block.interface'
+import { ILinkSocket } from '../src/domain/interfaces/link-socket.interface'
 
 // Current coverage - 62.81% (2022-02-15) - TODO: INCREASE COVERAGE AND UPDATE THIS
 

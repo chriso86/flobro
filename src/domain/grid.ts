@@ -4,10 +4,10 @@ import {
   DEFAULT_GRID_SIZE,
   DEFAULT_GRID_SNAP,
   DEFAULT_GRID_STROKE,
-} from './default.constants'
-import { IStyle } from '../interfaces/style.interface'
-import { IGrid } from '../interfaces/grid.interface'
-import { UnitOfMeasure } from '../interfaces/custom-types'
+} from '../utils/default.constants'
+import { IStyle } from './interfaces/style.interface'
+import { IGrid } from './interfaces/grid.interface'
+import { UnitOfMeasure } from './interfaces/custom-types'
 
 export class Grid implements IGrid {
   constructor(

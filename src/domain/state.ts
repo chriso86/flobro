@@ -1,14 +1,14 @@
-import { DEFAULT_GRID_SIZE } from './default.constants'
+import { DEFAULT_GRID_SIZE } from '../utils/default.constants'
 import { Grid } from './grid'
 import { Theme } from './theme'
-import { IState } from '../interfaces/state.interface'
-import { ITheme } from '../interfaces/theme.interface'
-import { IBlock } from '../interfaces/block.interface'
-import { IBlockSocket } from '../interfaces/block-socket.interface'
-import { IGrid } from '../interfaces/grid.interface'
-import { ILinkSocket } from '../interfaces/link-socket.interface'
-import { ILink } from '../interfaces/link.interface'
-import { UUID } from '../interfaces/custom-types'
+import { IState } from './interfaces/state.interface'
+import { ITheme } from './interfaces/theme.interface'
+import { IBlock } from './interfaces/block.interface'
+import { IBlockSocket } from './interfaces/block-socket.interface'
+import { IGrid } from './interfaces/grid.interface'
+import { ILinkSocket } from './interfaces/link-socket.interface'
+import { ILink } from './interfaces/link.interface'
+import { UUID } from './interfaces/custom-types'
 
 export class State implements IState {
   constructor(

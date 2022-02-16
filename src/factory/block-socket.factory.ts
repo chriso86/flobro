@@ -5,9 +5,9 @@ import {
   DEFAULT_SOCKET_CAN_VIEW,
   DEFAULT_SOCKET_DATA,
   DEFAULT_SOCKET_STYLE,
-} from '../domain/default.constants'
-import { Helper } from '../domain/helper'
-import { IBlockSocketOptions } from '../interfaces/block-socket-options.interface'
+} from '../utils/default.constants'
+import { Helper } from '../utils/helper'
+import { IBlockSocketOptions } from '../domain/interfaces/block-socket-options.interface'
 
 export class BlockSocketFactory {
   protected constructor() {

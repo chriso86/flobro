@@ -4,10 +4,10 @@ import {
   DEFAULT_SOCKET_CAN_VIEW,
   DEFAULT_SOCKET_DATA,
   DEFAULT_SOCKET_STYLE,
-} from './default.constants'
-import { ICircleStyle } from '../interfaces/circle-style.interface'
-import { ISocket } from '../interfaces/socket.interface'
-import { UUID } from '../interfaces/custom-types'
+} from '../utils/default.constants'
+import { ICircleStyle } from './interfaces/circle-style.interface'
+import { ISocket } from './interfaces/socket.interface'
+import { UUID } from './interfaces/custom-types'
 
 export class Socket<T> implements ISocket<T> {
   constructor(

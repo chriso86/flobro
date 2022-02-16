@@ -8,11 +8,11 @@ import {
   DEFAULT_SOCKET_FILL,
   DEFAULT_SOCKET_RADIUS,
   DEFAULT_SOCKET_STROKE,
-} from './default.constants'
-import { IStyle } from '../interfaces/style.interface'
-import { ITheme } from '../interfaces/theme.interface'
-import { ICircleStyle } from '../interfaces/circle-style.interface'
-import { IBlockStyle } from '../interfaces/block-style.interface'
+} from '../utils/default.constants'
+import { IStyle } from './interfaces/style.interface'
+import { ITheme } from './interfaces/theme.interface'
+import { ICircleStyle } from './interfaces/circle-style.interface'
+import { IBlockStyle } from './interfaces/block-style.interface'
 import { CircleStyle } from './circle-style'
 import { BlockStyle } from './block-style'
 

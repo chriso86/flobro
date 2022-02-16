@@ -1,5 +1,5 @@
 import { Subscription } from './subscription'
-import { IBehaviorSubject } from '../interfaces/behavior-subject.interface'
+import { IBehaviorSubject } from '../domain/interfaces/behavior-subject.interface'
 
 export class BehaviorSubject<T> implements IBehaviorSubject<T> {
   private _subscribers: Map<string, (value: T) => void> = new Map<

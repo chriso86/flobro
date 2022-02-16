@@ -5,10 +5,10 @@ import {
   DEFAULT_BLOCK_CAN_VIEW,
   DEFAULT_BLOCK_DATA,
   DEFAULT_BLOCK_STYLE,
-} from '../domain/default.constants'
-import { Helper } from '../domain/helper'
-import { IBlockOptions } from '../interfaces/block-options.interface'
-import { Key } from '../interfaces/custom-types'
+} from '../utils/default.constants'
+import { Helper } from '../utils/helper'
+import { IBlockOptions } from '../domain/interfaces/block-options.interface'
+import { Key } from '../domain/interfaces/custom-types'
 
 export class BlockFactory {
   private static _definitions: Map<Key, IBlockOptions<unknown>> = new Map<

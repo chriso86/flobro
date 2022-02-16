@@ -5,9 +5,9 @@ import {
   DEFAULT_SOCKET_CAN_EDIT,
   DEFAULT_SOCKET_DATA,
   DEFAULT_SOCKET_STYLE,
-} from '../domain/default.constants'
-import { Helper } from '../domain/helper'
-import { ILinkSocketOptions } from '../interfaces/link-socket-options.interface'
+} from '../utils/default.constants'
+import { Helper } from '../utils/helper'
+import { ILinkSocketOptions } from '../domain/interfaces/link-socket-options.interface'
 
 export class LinkSocketFactory {
   protected constructor() {

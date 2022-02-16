@@ -5,9 +5,9 @@ import {
   DEFAULT_LINK_CAN_VIEW,
   DEFAULT_LINK_DATA,
   DEFAULT_LINK_STYLE,
-} from '../domain/default.constants'
-import { Helper } from '../domain/helper'
-import { ILinkOptions } from '../interfaces/link-options.interface'
+} from '../utils/default.constants'
+import { Helper } from '../utils/helper'
+import { ILinkOptions } from '../domain/interfaces/link-options.interface'
 
 export class LinkFactory {
   protected constructor() {

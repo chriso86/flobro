@@ -7,15 +7,15 @@ import {
   DEFAULT_LINK_SOCKETS,
   DEFAULT_LINK_STYLE,
   DEFAULT_LINK_TARGET,
-} from './default.constants'
+} from '../utils/default.constants'
 import { LinkSocket } from './link.socket'
-import { LinkSocketFactory } from '../service/link-socket.factory'
-import { IStyle } from '../interfaces/style.interface'
-import { IBlockSocket } from '../interfaces/block-socket.interface'
-import { ILinkSocket } from '../interfaces/link-socket.interface'
-import { ILinkSocketOptions } from '../interfaces/link-socket-options.interface'
-import { ILink } from '../interfaces/link.interface'
-import { UUID } from '../interfaces/custom-types'
+import { LinkSocketFactory } from '../factory/link-socket.factory'
+import { IStyle } from './interfaces/style.interface'
+import { IBlockSocket } from './interfaces/block-socket.interface'
+import { ILinkSocket } from './interfaces/link-socket.interface'
+import { ILinkSocketOptions } from './interfaces/link-socket-options.interface'
+import { ILink } from './interfaces/link.interface'
+import { UUID } from './interfaces/custom-types'
 
 export class Link<T> implements ILink<T> {
   constructor(

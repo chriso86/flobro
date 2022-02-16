@@ -1,4 +1,4 @@
-import { BlockSocketFactory } from '../service/block-socket.factory'
+import { BlockSocketFactory } from '../factory/block-socket.factory'
 import {
   DEFAULT_BLOCK_CAN_DELETE,
   DEFAULT_BLOCK_CAN_EDIT,
@@ -6,14 +6,14 @@ import {
   DEFAULT_BLOCK_DATA,
   DEFAULT_BLOCK_SOCKETS,
   DEFAULT_BLOCK_STYLE,
-} from './default.constants'
+} from '../utils/default.constants'
 import { BlockSocket } from './block.socket'
-import { NotImplementedException } from './error-constants'
-import { IBlock } from '../interfaces/block.interface'
-import { IBlockStyle } from '../interfaces/block-style.interface'
-import { IBlockSocketOptions } from '../interfaces/block-socket-options.interface'
-import { ICoordinates } from '../interfaces/coordinates.interface'
-import { HTML, UUID } from '../interfaces/custom-types'
+import { NotImplementedException } from '../utils/error-constants'
+import { IBlock } from './interfaces/block.interface'
+import { IBlockStyle } from './interfaces/block-style.interface'
+import { IBlockSocketOptions } from './interfaces/block-socket-options.interface'
+import { ICoordinates } from './interfaces/coordinates.interface'
+import { HTML, UUID } from './interfaces/custom-types'
 
 export class Block<T> implements IBlock<T> {
   constructor(
