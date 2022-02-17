@@ -13,7 +13,12 @@ import { IBlockSocketOptions } from './interfaces/block-socket-options.interface
 import { IBlockSocket } from './interfaces/block-socket.interface'
 import { Helper } from '../utils/helper'
 import { BlockFactory } from '../factory/block.factory'
-import { DEFAULT_MAP } from '../utils/default.constants'
+import {
+  DEFAULT_MAP,
+  DEFAULT_SVG_CLASS,
+  DEFAULT_SVG_HEIGHT_MULTIPLIER,
+  DEFAULT_SVG_WIDTH_MULTIPLIER,
+} from '../utils/default.constants'
 import { State } from './state'
 import { Block } from './block'
 import { UUID } from './interfaces/custom-types'
@@ -38,7 +43,31 @@ export class FloBro implements IFloBro {
   }
 
   public render(): void {
-    throw new Error('Not implemented')
+    const container = this.state.container
+    const svg = document.createElement('svg')
+
+    if (!container) {
+      throw new Error(
+        'No container element has been set for Flobro. Please set a valid HTML element when constructing Flobro'
+      )
+    }
+
+    const viewportWidth = container.clientWidth
+    const viewportHeight = container.clientHeight
+    const totalWidth = viewportWidth * DEFAULT_SVG_WIDTH_MULTIPLIER
+    const totalHeight = viewportHeight * DEFAULT_SVG_HEIGHT_MULTIPLIER
+    const initialX = viewportWidth - viewportWidth / 2
+    const initialY = viewportHeight - viewportHeight / 2
+
+    svg.setAttribute('class', DEFAULT_SVG_CLASS)
+    svg.setAttribute('width', `${viewportWidth}`)
+    svg.setAttribute('height', `${viewportHeight}`)
+    svg.setAttribute(
+      'viewBox',
+      `${initialX} ${initialY} ${totalWidth} ${totalHeight}`
+    )
+
+    container.appendChild(svg)
   }
 
   public changeTheme(theme: Partial<ITheme>): void {

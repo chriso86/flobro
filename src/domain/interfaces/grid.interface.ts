@@ -5,4 +5,6 @@ export interface IGrid {
   gridSize: UnitOfMeasure
   snapToGrid: boolean
   style: IStyle
+
+  render(container: HTMLElement): void
 }

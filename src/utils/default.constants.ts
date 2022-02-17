@@ -14,7 +14,13 @@ export const DEFAULT_STOKE_COLOR = '#666'
 export const DEFAULT_FILL_COLOR = '#fff;'
 export const DEFAULT_BLOCK_ELEMENT_WIDTH = '100%'
 export const DEFAULT_BLOCK_ELEMENT_HEIGHT = 100
-export const DEFAULT_MAP = <T>() => new Map<UUID, T>()
+export const DEFAULT_MAP = <T>(): Map<UUID, T> => new Map<UUID, T>()
+
+/* SVG Defaults */
+export const DEFAULT_SVG_CLASS = 'flobro-svg-container'
+export const DEFAULT_SVG_WIDTH_MULTIPLIER = 2.5
+export const DEFAULT_SVG_HEIGHT_MULTIPLIER = 2
+export const DEFAULT_ZOOM_MULTIPLIER = 0.2
 
 /* Grid Defaults */
 export const DEFAULT_GRID_SIZE = 20

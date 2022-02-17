@@ -15,4 +15,6 @@ export class Grid implements IGrid {
     public snapToGrid: boolean = DEFAULT_GRID_SNAP,
     public style: IStyle = new Style(DEFAULT_GRID_FILL, DEFAULT_GRID_STROKE)
   ) {}
+
+  public render(container: HTMLElement): void {}
 }
