@@ -1,33 +1,34 @@
 import { Socket } from './socket'
-import {
-  DEFAULT_LINK_CAN_EDIT,
-  DEFAULT_SOCKET_CAN_DELETE,
-  DEFAULT_SOCKET_CAN_VIEW,
-  DEFAULT_SOCKET_DATA,
-  DEFAULT_SOCKET_PARENT,
-  DEFAULT_SOCKET_STYLE,
-} from '../utils/default.constants'
+import { DEFAULT_SOCKET_PARENT } from '../utils/default.constants'
 import { ICoordinates } from './interfaces/coordinates.interface'
 import { ILinkSocket } from './interfaces/link-socket.interface'
-import { ICircleStyle } from './interfaces/circle-style.interface'
 import { ILink } from './interfaces/link.interface'
-import { UUID } from './interfaces/custom-types'
+import { ILinkSocketOptions } from './interfaces/link-socket-options.interface'
 
 export class LinkSocket<T> extends Socket<T> implements ILinkSocket<T> {
-  constructor(
-    public id: UUID,
-    public position: ICoordinates,
-    public style: ICircleStyle = DEFAULT_SOCKET_STYLE,
-    public canDelete: boolean = DEFAULT_SOCKET_CAN_DELETE,
-    public canEdit: boolean = DEFAULT_LINK_CAN_EDIT,
-    public canView: boolean = DEFAULT_SOCKET_CAN_VIEW,
-    public data: T | null = DEFAULT_SOCKET_DATA,
-    public parent: ILink<unknown> | null = DEFAULT_SOCKET_PARENT
-  ) {
-    super(id, style, canDelete, canEdit, canView, data)
+  public position: ICoordinates
+  public parent: ILink<unknown> | null = DEFAULT_SOCKET_PARENT
+
+  constructor(options: ILinkSocketOptions<T>) {
+    super({
+      id: options.id,
+      style: options.style,
+      canDelete: options.canDelete,
+      canEdit: options.canEdit,
+      canView: options.canView,
+      data: options.data,
+    })
+
+    this.position = options.position
   }
 
-  public render(): void {}
+  public render(): void {
+    throw new Error(`Not Implemented`)
+  }
+
+  public updateId(id: string): void {
+    this.id = id
+  }
 
   public updateParent(link: ILink<unknown>): void {
     this.parent = link
@@ -38,6 +39,12 @@ export class LinkSocket<T> extends Socket<T> implements ILinkSocket<T> {
   }
 
   public delete(): void {
+    if (!this.id) {
+      throw new Error(
+        `No valid ID has been assigned for the link socket you're trying to delete.`
+      )
+    }
+
     if (!this.parent) {
       throw new Error(
         `Critical error! Failed to find a parent for block socket ID "${this.id}"`

@@ -16,34 +16,56 @@ import { ILinkSocket } from './interfaces/link-socket.interface'
 import { ILinkSocketOptions } from './interfaces/link-socket-options.interface'
 import { ILink } from './interfaces/link.interface'
 import { UUID } from './interfaces/custom-types'
+import { ILinkOptions } from './interfaces/link-options.interface'
 
 export class Link<T> implements ILink<T> {
-  constructor(
-    public id: UUID,
-    public startX: number,
-    public startY: number,
-    public startCurveX: number,
-    public startCurveY: number,
-    public endCurveX: number,
-    public endCurveY: number,
-    public endX: number,
-    public endY: number,
-    public style: IStyle = DEFAULT_LINK_STYLE,
-    public canDelete: boolean = DEFAULT_LINK_CAN_DELETE,
-    public canEdit: boolean = DEFAULT_LINK_CAN_EDIT,
-    public canView: boolean = DEFAULT_LINK_CAN_VIEW,
-    public data: T | null = DEFAULT_LINK_DATA,
-    public origin: IBlockSocket<unknown> | null = DEFAULT_LINK_ORIGIN,
-    public target: IBlockSocket<unknown> | null = DEFAULT_LINK_TARGET,
-    public linkSockets: Map<UUID, ILinkSocket<unknown>> = DEFAULT_LINK_SOCKETS
-  ) {}
+  public id?: string
+  public startX: number
+  public startY: number
+  public startCurveX: number
+  public startCurveY: number
+  public endCurveX: number
+  public endCurveY: number
+  public endX: number
+  public endY: number
+  public linkSockets: Map<string, ILinkSocket<unknown>> = DEFAULT_LINK_SOCKETS
+  public origin: IBlockSocket<unknown> | null = DEFAULT_LINK_ORIGIN
+  public target: IBlockSocket<unknown> | null = DEFAULT_LINK_TARGET
+  public canView: boolean = DEFAULT_LINK_CAN_VIEW
+  public canEdit: boolean = DEFAULT_LINK_CAN_EDIT
+  public canDelete: boolean = DEFAULT_LINK_CAN_DELETE
+  public style: IStyle = DEFAULT_LINK_STYLE
+  public data: T | null | undefined = DEFAULT_LINK_DATA
+
+  constructor(options: ILinkOptions<T>) {
+    this.id = options.id
+    this.startX = options.startX
+    this.startY = options.startY
+    this.startCurveX = options.startCurveX
+    this.startCurveY = options.startCurveY
+    this.endCurveX = options.endCurveX
+    this.endCurveY = options.endCurveY
+    this.endX = options.endX
+    this.endY = options.endY
+    this.canView = options.canView ?? this.canView
+    this.canEdit = options.canEdit ?? this.canEdit
+    this.canDelete = options.canDelete ?? this.canDelete
+    this.style = options.style ?? this.style
+    this.data = options.data ?? this.data
+  }
 
   public render(): void {
     throw new Error('Not implemented')
   }
 
-  public addLinkSocket<T>(options: ILinkSocketOptions<T>): LinkSocket<T> {
-    const linkSocket = LinkSocketFactory.Create<T>(options)
+  public addLinkSocket<K>(options: ILinkSocketOptions<K>): LinkSocket<K> {
+    const linkSocket = LinkSocketFactory.Create<K>(options)
+
+    if (!linkSocket.id) {
+      throw new Error(
+        `Critical error. The ID for the link socket was not set in the factory`
+      )
+    }
 
     linkSocket.updateParent(this)
     this.linkSockets.set(linkSocket.id, linkSocket)
@@ -63,6 +85,10 @@ export class Link<T> implements ILink<T> {
     }
 
     return false
+  }
+
+  public updateId(id: string): void {
+    this.id = id
   }
 
   public updateOrigin(socket: IBlockSocket<unknown>): void {
@@ -94,6 +120,12 @@ export class Link<T> implements ILink<T> {
   }
 
   public delete(): void {
+    if (!this.id) {
+      throw new Error(
+        `No valid ID has been assigned for the link you're trying to delete.`
+      )
+    }
+
     if (!this.origin || !this.target) {
       throw new Error(
         `Critical error! Failed to find an origin or target block for link ID "${this.id}"`

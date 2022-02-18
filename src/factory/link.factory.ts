@@ -15,21 +15,21 @@ export class LinkFactory {
   }
 
   public static Create<T>(options: ILinkOptions<T>): Link<T> {
-    return new Link<T>(
-      options.id ?? Helper.GenerateUUID(),
-      options.startX,
-      options.startY,
-      options.startCurveX,
-      options.startCurveY,
-      options.endCurveX,
-      options.endCurveY,
-      options.endX,
-      options.endY,
-      options.style ?? DEFAULT_LINK_STYLE,
-      options.canDelete ?? DEFAULT_LINK_CAN_DELETE,
-      options.canEdit ?? DEFAULT_LINK_CAN_EDIT,
-      options.canView ?? DEFAULT_LINK_CAN_VIEW,
-      options.data ?? DEFAULT_LINK_DATA
-    )
+    return new Link<T>({
+      id: options.id ?? Helper.GenerateUUID(),
+      startX: options.startX,
+      startY: options.startY,
+      startCurveX: options.startCurveX,
+      startCurveY: options.startCurveY,
+      endCurveX: options.endCurveX,
+      endCurveY: options.endCurveY,
+      endX: options.endX,
+      endY: options.endY,
+      style: options.style ?? DEFAULT_LINK_STYLE,
+      canDelete: options.canDelete ?? DEFAULT_LINK_CAN_DELETE,
+      canEdit: options.canEdit ?? DEFAULT_LINK_CAN_EDIT,
+      canView: options.canView ?? DEFAULT_LINK_CAN_VIEW,
+      data: options.data ?? DEFAULT_LINK_DATA,
+    })
   }
 }

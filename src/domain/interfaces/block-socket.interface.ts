@@ -10,7 +10,7 @@ export interface IBlockSocket<T> extends ISocket<T> {
   side: Side
 
   /* Path from one Link to another Link */
-  addLink<T>(options: ILinkOptions<T>): ILink<T>
+  addLink<K>(options: ILinkOptions<K>): ILink<K>
   deleteLink(id: UUID): boolean
 
   updateParent(link: IBlock<unknown>): void

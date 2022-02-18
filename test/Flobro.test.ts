@@ -162,8 +162,6 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       canEdit: false,
       canView: false,
       canDelete: false,
-      inSocketIds: [],
-      outSocketIds: [],
       style,
     })
 
@@ -199,7 +197,6 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
         side: 'in',
         data: socketData,
         style: socketStyle,
-        linkIds: [],
         canView: false,
         canDelete: false,
         canEdit: false,
@@ -237,7 +234,6 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
         side: 'out',
         data: socketData,
         style: socketStyle,
-        linkIds: [],
         canView: false,
         canDelete: false,
         canEdit: false,
@@ -275,10 +271,11 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
             const inKeys = Array.from(nextBlock.inSockets.keys())
 
             return {
-              currentBlockId: block.id,
-              nextBlockId: nextBlock.id,
-              currentBlockOutputId: block.outSockets.get(outKeys[0])!.id,
-              nextBlockInputId: nextBlock.inSockets.get(inKeys[0])!.id,
+              currentBlockId: block.id ?? null,
+              nextBlockId: nextBlock.id ?? null,
+              currentBlockOutputId:
+                block.outSockets.get(outKeys[0])?.id ?? null,
+              nextBlockInputId: nextBlock.inSockets.get(inKeys[0])?.id ?? null,
             }
           }
 
@@ -299,11 +296,21 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       const targetBlock = flobro.state.blocks.get(connector.nextBlockId!)!
       expect(originBlock).toBeDefined()
       expect(targetBlock).toBeDefined()
+
+      if (!connector.currentBlockOutputId) {
+        throw new Error('Current block output ID is not defined')
+      }
+
       const originSocket = originBlock.outSockets.get(
-        connector.currentBlockOutputId!
+        connector.currentBlockOutputId
       )!
+
+      if (!connector.nextBlockInputId) {
+        throw new Error('Next block input ID is not defined')
+      }
+
       const targetSocket = targetBlock.inSockets.get(
-        connector.nextBlockInputId!
+        connector.nextBlockInputId
       )!
       expect(originSocket).toBeDefined()
       expect(targetSocket).toBeDefined()
@@ -335,9 +342,6 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
         endCurveY,
         endX,
         endY,
-        linkSocketIds: [],
-        originId: connector.currentBlockOutputId,
-        targetId: connector.nextBlockInputId,
         canView: false,
         canDelete: false,
         canEdit: false,
@@ -345,6 +349,14 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
 
       link.updateOrigin(originSocket)
       link.updateTarget(targetSocket)
+
+      if (!link.origin) {
+        throw new Error('Origin was not set correctly')
+      }
+
+      if (!link.target) {
+        throw new Error('Target was not set correctly')
+      }
 
       // Test link
       expect(link.id).toEqual(linkId)
@@ -359,8 +371,8 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       expect(link.endX).toEqual(endX)
       expect(link.endY).toEqual(endY)
       expect(link.linkSockets).toEqual(new Map<UUID, ILinkSocket<unknown>>())
-      expect(link.origin!.id).toEqual(originSocket.id)
-      expect(link.target!.id).toEqual(targetSocket.id)
+      expect(link.origin.id).toEqual(originSocket.id)
+      expect(link.target.id).toEqual(targetSocket.id)
       expect(link.canView).toEqual(false)
       expect(link.canDelete).toEqual(false)
       expect(link.canEdit).toEqual(false)

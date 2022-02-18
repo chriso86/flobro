@@ -1,15 +1,15 @@
 import { ITheme } from './theme.interface'
-import { IBlockSocketOptions } from './block-socket-options.interface'
 import { IGrid } from './grid.interface'
-import { IBlockOptions } from './block-options.interface'
-import { ILinkSocketOptions } from './link-socket-options.interface'
-import { ILinkOptions } from './link-options.interface'
+import { ISavedBlock } from './saved-block.interface'
+import { ISavedBlockSocket } from './saved-block-socket.interface'
+import { ISavedLinkSocket } from './saved-link-socket.interface'
+import { ISavedLink } from './saved-link.interface'
 
 export interface ISavedState {
   grid: IGrid
   theme: ITheme
-  blocks: IBlockOptions<unknown>[]
-  blockSockets: IBlockSocketOptions<unknown>[]
-  linkSockets: ILinkSocketOptions<unknown>[]
-  links: ILinkOptions<unknown>[]
+  blocks: ISavedBlock[]
+  blockSockets: ISavedBlockSocket[]
+  linkSockets: ISavedLinkSocket[]
+  links: ISavedLink[]
 }

@@ -2,6 +2,8 @@ import { IElement } from './element.interface'
 import { IBlockSocket } from './block-socket.interface'
 import { ILinkSocket } from './link-socket.interface'
 import { UUID } from './custom-types'
+import { ILinkSocketOptions } from './link-socket-options.interface'
+import { LinkSocket } from '../link.socket'
 
 export interface ILink<T> extends IElement<T> {
   startX: number
@@ -13,13 +15,13 @@ export interface ILink<T> extends IElement<T> {
   endX: number
   endY: number
   linkSockets: Map<UUID, ILinkSocket<unknown>>
-  origin: IBlockSocket<unknown> | null
-  target: IBlockSocket<unknown> | null
+  origin?: IBlockSocket<unknown> | null
+  target?: IBlockSocket<unknown> | null
 
   updateTarget(socket: IBlockSocket<unknown>): void
   updateOrigin(socket: IBlockSocket<unknown>): void
 
   /* Node Link Pieces (either on Nodes or along Paths) */
-  addLinkSocket<T>(options: ILinkSocket<T>): ILinkSocket<T>
+  addLinkSocket<K>(options: ILinkSocketOptions<K>): LinkSocket<K>
   deleteLinkSocket(id: UUID): boolean
 }

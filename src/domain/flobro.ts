@@ -4,12 +4,9 @@ import { IBlock } from './interfaces/block.interface'
 import { IGrid } from './interfaces/grid.interface'
 import { ILinkSocket } from './interfaces/link-socket.interface'
 import { IBlockOptions } from './interfaces/block-options.interface'
-import { ILinkOptions } from './interfaces/link-options.interface'
-import { ILinkSocketOptions } from './interfaces/link-socket-options.interface'
 import { ILink } from './interfaces/link.interface'
 import { IState } from './interfaces/state.interface'
 import { ISavedState } from './interfaces/saved-state.interface'
-import { IBlockSocketOptions } from './interfaces/block-socket-options.interface'
 import { IBlockSocket } from './interfaces/block-socket.interface'
 import { Helper } from '../utils/helper'
 import { BlockFactory } from '../factory/block.factory'
@@ -22,14 +19,12 @@ import {
 import { State } from './state'
 import { Block } from './block'
 import { UUID } from './interfaces/custom-types'
+import { ISavedBlock } from './interfaces/saved-block.interface'
+import { ISavedBlockSocket } from './interfaces/saved-block-socket.interface'
+import { ISavedLink } from './interfaces/saved-link.interface'
+import { ISavedLinkSocket } from './interfaces/saved-link-socket.interface'
 
 export class FloBro implements IFloBro {
-  private _state: IState
-
-  public get state(): IState {
-    return this._state
-  }
-
   constructor(container: HTMLElement, grid?: IGrid, theme?: ITheme) {
     if (container.style.display === 'inline') {
       console.warn(
@@ -40,6 +35,104 @@ export class FloBro implements IFloBro {
     this._state = new State(container, grid, theme)
 
     console.log('FloBro Initialized!')
+  }
+
+  private _state: IState
+
+  public get state(): IState {
+    return this._state
+  }
+
+  private static mapBlock<T>(block: IBlock<T>): ISavedBlock {
+    const inSockets = Array.from(block.inSockets.values())
+    const outSockets = Array.from(block.outSockets.values())
+
+    return <ISavedBlock>{
+      id: block.id,
+      title: block.title,
+      content: block.content,
+      position: block.position,
+      style: block.style,
+      inSocketIds: inSockets.map((s) => s.id),
+      outSocketIds: outSockets.map((s) => s.id),
+      canDelete: block.canDelete,
+      canEdit: block.canEdit,
+      canView: block.canView,
+      data: block.data,
+    }
+  }
+
+  private static mapBlockSocket<T>(socket: IBlockSocket<T>): ISavedBlockSocket {
+    const links = Array.from(socket.links.values())
+
+    if (!socket.parent) {
+      throw new Error(
+        `The parent is missing on the block socket with ID "${socket.id}"`
+      )
+    }
+
+    return <ISavedBlockSocket>{
+      id: socket.id,
+      side: socket.side,
+      parentId: socket.parent.id,
+      style: socket.style,
+      canDelete: socket.canDelete,
+      canEdit: socket.canEdit,
+      canView: socket.canView,
+      data: socket.data,
+      linkIds: links.map((l) => l.id),
+    }
+  }
+
+  private static mapLinkSocket<T>(socket: ILinkSocket<T>): ISavedLinkSocket {
+    if (!socket.parent) {
+      throw new Error(
+        `The parent is missing on the link socket with ID "${socket.id}"`
+      )
+    }
+
+    return <ISavedLinkSocket>{
+      id: socket.id,
+      position: socket.position,
+      parentId: socket.parent.id,
+      style: socket.style,
+      canDelete: socket.canDelete,
+      canEdit: socket.canEdit,
+      canView: socket.canView,
+      data: socket.data,
+    }
+  }
+
+  private static mapLink<T>(link: ILink<T>): ISavedLink {
+    const linkSockets = Array.from(link.linkSockets.values())
+
+    if (!link.origin) {
+      throw new Error(`The origin is missing on the link with ID "${link.id}"`)
+    }
+
+    if (!link.target) {
+      throw new Error(`The target is missing on the link with ID "${link.id}"`)
+    }
+
+    return <ISavedLink>{
+      id: link.id,
+      startX: link.startX,
+      startY: link.startY,
+      startCurveX: link.startCurveX,
+      startCurveY: link.startCurveY,
+      endCurveX: link.endCurveX,
+      endCurveY: link.endCurveY,
+      endX: link.endX,
+      endY: link.endY,
+      originId: link.origin.id,
+      targetId: link.target.id,
+      style: link.style,
+      data: link.data,
+      canDelete: link.canDelete,
+      canEdit: link.canEdit,
+      canView: link.canView,
+      linkSocketIds: linkSockets.map((ls) => ls.id).filter((ls) => !!ls),
+    }
   }
 
   public render(): void {
@@ -137,54 +230,82 @@ export class FloBro implements IFloBro {
       Helper.ReduceLinkToMap,
       DEFAULT_MAP<ILink<unknown>>()
     )
-
-    const blockOptions = state.blocks.reduce(
-      Helper.ReduceBlockOptionsToMap,
-      DEFAULT_MAP<IBlockOptions<unknown>>()
+    const savedBlocks = state.blocks.reduce(
+      Helper.ReduceSavedBlockToMap,
+      DEFAULT_MAP<ISavedBlock>()
     )
-    const blockSocketOptions = state.blockSockets.reduce(
-      Helper.ReduceBlockSocketOptionsToMap,
-      DEFAULT_MAP<IBlockSocketOptions<unknown>>()
+    const savedBlockSockets = state.blockSockets.reduce(
+      Helper.ReduceSavedBlockSocketToMap,
+      DEFAULT_MAP<ISavedBlockSocket>()
     )
-    const linkOptions = state.links.reduce(
-      Helper.ReduceLinkOptionsToMap,
-      DEFAULT_MAP<ILinkOptions<unknown>>()
+    const savedLinks = state.links.reduce(
+      Helper.ReduceSavedLinkToMap,
+      DEFAULT_MAP<ISavedLink>()
     )
-
-    const constructedBlocksState: Map<UUID, IBlock<unknown>> = new Map<
-      UUID,
-      IBlock<unknown>
-    >()
 
     blocks.forEach((block: IBlock<unknown>) => {
-      const bo = blockOptions.get(block.id)!
+      if (!block.id) {
+        throw new Error(
+          `Critical error. The ID for the saved block was not set.`
+        )
+      }
 
-      if (bo.inSocketIds?.length) {
-        block.inSockets = bo.inSocketIds.reduce(
+      const sb = savedBlocks.get(block.id)
+
+      if (!sb) {
+        throw new Error('Could not find saved block.')
+      }
+
+      if (sb?.inSocketIds?.length) {
+        block.inSockets = sb.inSocketIds.reduce(
           (inSocketsMap: Map<UUID, IBlockSocket<unknown>>, socketId: UUID) => {
-            const blockSocket = blockSockets.get(socketId)!
-            const bso = blockSocketOptions.get(socketId)!
+            const blockSocket = blockSockets.get(socketId)
+            const sbs = savedBlockSockets.get(socketId)
+
+            if (!blockSocket) {
+              throw new Error('Could not find block socket.')
+            }
+            if (!sbs) {
+              throw new Error('Could not find saved block socket.')
+            }
 
             blockSocket.updateParent(block)
             this.state.addBlockSocket(blockSocket)
 
-            if (bso.linkIds?.length) {
-              blockSocket.links = bso.linkIds?.reduce(
+            if (sbs.linkIds?.length) {
+              blockSocket.links = sbs.linkIds?.reduce(
                 (linksMap: Map<UUID, ILink<unknown>>, linkId: UUID) => {
-                  const link = links.get(linkId)!
-                  const lo = linkOptions.get(linkId)!
+                  const link = links.get(linkId)
+                  const sl = savedLinks.get(linkId)
+
+                  if (!link) {
+                    throw new Error('Could not find block socket.')
+                  }
+                  if (!sl) {
+                    throw new Error('Could not find saved block socket.')
+                  }
+
+                  const originSocket = blockSockets.get(sl.originId)
+
+                  if (!originSocket) {
+                    throw new Error('Could not find origin block for link.')
+                  }
 
                   link.updateTarget(blockSocket)
-                  link.updateOrigin(blockSockets.get(lo.originId!)!)
+                  link.updateOrigin(originSocket)
                   this.state.addLink(link)
 
-                  if (lo.linkSocketIds?.length) {
-                    link.linkSockets = lo.linkSocketIds.reduce(
+                  if (sl.linkSocketIds?.length) {
+                    link.linkSockets = sl.linkSocketIds.reduce(
                       (
                         linkSocketsMap: Map<UUID, ILinkSocket<unknown>>,
                         linkSocketId: UUID
                       ) => {
-                        const linkSocket = linkSockets.get(linkSocketId)!
+                        const linkSocket = linkSockets.get(linkSocketId)
+
+                        if (!linkSocket) {
+                          throw new Error('Could not find link socket.')
+                        }
 
                         linkSocket.updateParent(link)
                         this.state.addLinkSocket(linkSocket)
@@ -207,32 +328,56 @@ export class FloBro implements IFloBro {
         )
       }
 
-      if (bo.outSocketIds?.length) {
-        block.inSockets = bo.outSocketIds.reduce(
+      if (sb.outSocketIds?.length) {
+        block.inSockets = sb.outSocketIds.reduce(
           (inSocketsMap: Map<UUID, IBlockSocket<unknown>>, socketId: UUID) => {
-            const blockSocket = blockSockets.get(socketId)!
-            const bso = blockSocketOptions.get(socketId)!
+            const blockSocket = blockSockets.get(socketId)
+            const sbs = savedBlockSockets.get(socketId)
+
+            if (!blockSocket) {
+              throw new Error('Could not find block socket.')
+            }
+            if (!sbs) {
+              throw new Error('Could not find saved block socket.')
+            }
 
             blockSocket.updateParent(block)
             this.state.addBlockSocket(blockSocket)
 
-            if (bso.linkIds?.length) {
-              blockSocket.links = bso.linkIds?.reduce(
+            if (sbs.linkIds?.length) {
+              blockSocket.links = sbs.linkIds?.reduce(
                 (linksMap: Map<UUID, ILink<unknown>>, linkId: UUID) => {
-                  const link = links.get(linkId)!
-                  const lo = linkOptions.get(linkId)!
+                  const link = links.get(linkId)
+                  const sl = savedLinks.get(linkId)
+
+                  if (!link) {
+                    throw new Error('Could not find block socket.')
+                  }
+                  if (!sl) {
+                    throw new Error('Could not find saved block socket.')
+                  }
+
+                  const originSocket = blockSockets.get(sl.originId)
+
+                  if (!originSocket) {
+                    throw new Error('Could not find origin block for link.')
+                  }
 
                   link.updateTarget(blockSocket)
-                  link.updateOrigin(blockSockets.get(lo.originId!)!)
+                  link.updateOrigin(originSocket)
                   this.state.addLink(link)
 
-                  if (lo.linkSocketIds?.length) {
-                    link.linkSockets = lo.linkSocketIds.reduce(
+                  if (sl.linkSocketIds?.length) {
+                    link.linkSockets = sl.linkSocketIds.reduce(
                       (
                         linkSocketsMap: Map<UUID, ILinkSocket<unknown>>,
                         linkSocketId: UUID
                       ) => {
-                        const linkSocket = linkSockets.get(linkSocketId)!
+                        const linkSocket = linkSockets.get(linkSocketId)
+
+                        if (!linkSocket) {
+                          throw new Error('Could not find link socket.')
+                        }
 
                         linkSocket.updateParent(link)
                         this.state.addLinkSocket(linkSocket)
@@ -256,99 +401,6 @@ export class FloBro implements IFloBro {
       }
 
       this.state.addBlock(block)
-      constructedBlocksState.set(block.id, block)
     })
-  }
-
-  private static mapBlock<T>(block: IBlock<T>): IBlockOptions<T> {
-    const inSockets = Array.from(block.inSockets.values())
-    const outSockets = Array.from(block.outSockets.values())
-
-    return {
-      title: block.title,
-      content: block.content,
-      position: block.position,
-      style: block.style,
-      inSocketIds: inSockets.map((s) => s.id),
-      outSocketIds: outSockets.map((s) => s.id),
-      canDelete: block.canDelete,
-      canEdit: block.canEdit,
-      canView: block.canView,
-      data: block.data,
-    }
-  }
-
-  private static mapBlockSocket<T>(
-    socket: IBlockSocket<T>
-  ): IBlockSocketOptions<T> {
-    const links = Array.from(socket.links.values())
-
-    if (!socket.parent) {
-      throw new Error(
-        `The parent is missing on the block socket with ID "${socket.id}"`
-      )
-    }
-
-    return {
-      side: socket.side,
-      parentId: socket.parent.id,
-      style: socket.style,
-      canDelete: socket.canDelete,
-      canEdit: socket.canEdit,
-      canView: socket.canView,
-      data: socket.data,
-      linkIds: links.map((l) => l.id),
-    }
-  }
-
-  private static mapLinkSocket<T>(
-    socket: ILinkSocket<T>
-  ): ILinkSocketOptions<T> {
-    if (!socket.parent) {
-      throw new Error(
-        `The parent is missing on the link socket with ID "${socket.id}"`
-      )
-    }
-
-    return {
-      position: socket.position,
-      parentId: socket.parent.id,
-      style: socket.style,
-      canDelete: socket.canDelete,
-      canEdit: socket.canEdit,
-      canView: socket.canView,
-      data: socket.data,
-    }
-  }
-
-  private static mapLink<T>(link: ILink<T>): ILinkOptions<T> {
-    const linkSockets = Array.from(link.linkSockets.values())
-
-    if (!link.origin) {
-      throw new Error(`The origin is missing on the link with ID "${link.id}"`)
-    }
-
-    if (!link.target) {
-      throw new Error(`The target is missing on the link with ID "${link.id}"`)
-    }
-
-    return {
-      startX: link.startX,
-      startY: link.startY,
-      startCurveX: link.startCurveX,
-      startCurveY: link.startCurveY,
-      endCurveX: link.endCurveX,
-      endCurveY: link.endCurveY,
-      endX: link.endX,
-      endY: link.endY,
-      originId: link.origin.id,
-      targetId: link.target.id,
-      style: link.style,
-      data: link.data,
-      canDelete: link.canDelete,
-      canEdit: link.canEdit,
-      canView: link.canView,
-      linkSocketIds: linkSockets.map((ls) => ls.id),
-    }
   }
 }

@@ -2,7 +2,7 @@ import { IStyle } from './style.interface'
 import { UUID } from './custom-types'
 
 export interface IElement<T> {
-  id: UUID
+  id?: UUID
   canView: boolean
   canEdit: boolean
   canDelete: boolean
@@ -10,6 +10,7 @@ export interface IElement<T> {
   data?: T | null
 
   render(): void
+  updateId(id: string): void
   updateViewPermission(canView: boolean): void
   updateEditPermission(canEdit: boolean): void
   updateDeletePermission(canDelete: boolean): void

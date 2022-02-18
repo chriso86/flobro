@@ -1,10 +1,6 @@
-import { IElementOptions } from './element-options.interface'
-import { ICircleStyle } from './circle-style.interface'
-import { Side, UUID } from './custom-types'
+import { Side } from './custom-types'
+import { ISocketOptions } from './socket-options.interface'
 
-export interface IBlockSocketOptions<T> extends IElementOptions<T> {
+export interface IBlockSocketOptions<T> extends ISocketOptions<T> {
   side: Side
-  parentId?: UUID | null
-  linkIds?: UUID[]
-  style?: ICircleStyle
 }

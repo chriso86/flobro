@@ -1,35 +1,33 @@
 import { Socket } from './socket'
 import {
   DEFAULT_BLOCK_SOCKET_LINKS,
-  DEFAULT_LINK_CAN_EDIT,
-  DEFAULT_SOCKET_CAN_DELETE,
-  DEFAULT_SOCKET_CAN_VIEW,
-  DEFAULT_SOCKET_DATA,
   DEFAULT_SOCKET_PARENT,
-  DEFAULT_SOCKET_STYLE,
 } from '../utils/default.constants'
 import { Link } from './link'
 import { LinkFactory } from '../factory/link.factory'
 import { IBlock } from './interfaces/block.interface'
 import { IBlockSocket } from './interfaces/block-socket.interface'
-import { ICircleStyle } from './interfaces/circle-style.interface'
 import { ILinkOptions } from './interfaces/link-options.interface'
 import { ILink } from './interfaces/link.interface'
 import { Side, UUID } from './interfaces/custom-types'
+import { IBlockSocketOptions } from './interfaces/block-socket-options.interface'
 
 export class BlockSocket<T> extends Socket<T> implements IBlockSocket<T> {
-  constructor(
-    public id: UUID,
-    public side: Side,
-    public style: ICircleStyle = DEFAULT_SOCKET_STYLE,
-    public canDelete: boolean = DEFAULT_SOCKET_CAN_DELETE,
-    public canEdit: boolean = DEFAULT_LINK_CAN_EDIT,
-    public canView: boolean = DEFAULT_SOCKET_CAN_VIEW,
-    public data: T | null = DEFAULT_SOCKET_DATA,
-    public parent: IBlock<unknown> | null = DEFAULT_SOCKET_PARENT,
-    public links: Map<UUID, ILink<unknown>> = DEFAULT_BLOCK_SOCKET_LINKS
-  ) {
-    super(id, style, canDelete, canEdit, canView, data)
+  public side: Side
+  public parent: IBlock<unknown> | null = DEFAULT_SOCKET_PARENT
+  public links: Map<UUID, ILink<unknown>> = DEFAULT_BLOCK_SOCKET_LINKS
+
+  constructor(options: IBlockSocketOptions<T>) {
+    super({
+      id: options.id,
+      style: options.style,
+      canDelete: options.canDelete,
+      canEdit: options.canEdit,
+      canView: options.canView,
+      data: options.data,
+    })
+
+    this.side = options.side
   }
 
   public render(): void {
@@ -40,8 +38,14 @@ export class BlockSocket<T> extends Socket<T> implements IBlockSocket<T> {
     this.parent = block
   }
 
-  public addLink<T>(options: ILinkOptions<T>): Link<T> {
-    const link = LinkFactory.Create<T>(options)
+  public addLink<K>(options: ILinkOptions<K>): Link<K> {
+    const link = LinkFactory.Create<K>(options)
+
+    if (!link.id) {
+      throw new Error(
+        `Critical error. The ID for the link was not set in the factory`
+      )
+    }
 
     link.updateOrigin(this)
     this.links.set(link.id, link)
@@ -63,6 +67,12 @@ export class BlockSocket<T> extends Socket<T> implements IBlockSocket<T> {
   }
 
   public delete(): void {
+    if (!this.id) {
+      throw new Error(
+        `No valid ID has been assigned for the block socket you're trying to delete.`
+      )
+    }
+
     if (!this.parent) {
       throw new Error(
         `Critical error! Failed to find a parent for block socket ID "${this.id}"`

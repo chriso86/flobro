@@ -15,14 +15,14 @@ export class BlockSocketFactory {
   }
 
   public static Create<T>(options: IBlockSocketOptions<T>): BlockSocket<T> {
-    return new BlockSocket<T>(
-      options.id ?? Helper.GenerateUUID(),
-      options.side,
-      options.style ?? DEFAULT_SOCKET_STYLE,
-      options.canDelete ?? DEFAULT_SOCKET_CAN_DELETE,
-      options.canEdit ?? DEFAULT_SOCKET_CAN_EDIT,
-      options.canView ?? DEFAULT_SOCKET_CAN_VIEW,
-      options.data ?? DEFAULT_SOCKET_DATA
-    )
+    return new BlockSocket<T>({
+      id: options.id ?? Helper.GenerateUUID(),
+      side: options.side,
+      style: options.style ?? DEFAULT_SOCKET_STYLE,
+      canDelete: options.canDelete ?? DEFAULT_SOCKET_CAN_DELETE,
+      canEdit: options.canEdit ?? DEFAULT_SOCKET_CAN_EDIT,
+      canView: options.canView ?? DEFAULT_SOCKET_CAN_VIEW,
+      data: options.data ?? DEFAULT_SOCKET_DATA,
+    })
   }
 }

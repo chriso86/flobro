@@ -14,40 +14,61 @@ import { IBlockStyle } from './interfaces/block-style.interface'
 import { IBlockSocketOptions } from './interfaces/block-socket-options.interface'
 import { ICoordinates } from './interfaces/coordinates.interface'
 import { HTML, UUID } from './interfaces/custom-types'
+import { IBlockOptions } from './interfaces/block-options.interface'
 
 export class Block<T> implements IBlock<T> {
-  constructor(
-    public id: UUID,
-    public title: string,
-    public content: HTML,
-    public position: ICoordinates,
-    public style: IBlockStyle = DEFAULT_BLOCK_STYLE,
-    public canDelete: boolean = DEFAULT_BLOCK_CAN_DELETE,
-    public canEdit: boolean = DEFAULT_BLOCK_CAN_EDIT,
-    public canView: boolean = DEFAULT_BLOCK_CAN_VIEW,
-    public data: T | null = DEFAULT_BLOCK_DATA,
-    public inSockets: Map<UUID, BlockSocket<unknown>> = DEFAULT_BLOCK_SOCKETS,
-    public outSockets: Map<UUID, BlockSocket<unknown>> = DEFAULT_BLOCK_SOCKETS
-  ) {}
+  public id?: UUID
+  public title: string
+  public content: HTML
+  public position: ICoordinates
+  public style: IBlockStyle = DEFAULT_BLOCK_STYLE
+  public canDelete: boolean = DEFAULT_BLOCK_CAN_DELETE
+  public canEdit: boolean = DEFAULT_BLOCK_CAN_EDIT
+  public canView: boolean = DEFAULT_BLOCK_CAN_VIEW
+  public data: T | null = DEFAULT_BLOCK_DATA
+  public inSockets: Map<UUID, BlockSocket<unknown>> = DEFAULT_BLOCK_SOCKETS
+  public outSockets: Map<UUID, BlockSocket<unknown>> = DEFAULT_BLOCK_SOCKETS
+
+  constructor(options: IBlockOptions<T>) {
+    this.id = options.id
+    this.title = options.title
+    this.content = options.content
+    this.position = options.position
+    this.canDelete = options.canDelete ?? this.canDelete
+    this.canEdit = options.canEdit ?? this.canEdit
+    this.canView = options.canView ?? this.canView
+    this.data = options.data ?? this.data
+    this.style = options.style ?? this.style
+  }
 
   public render(): void {
     throw new Error('Not implemented')
   }
 
-  public addSocket<T>(options: IBlockSocketOptions<T>): BlockSocket<T> {
-    const nodeLink = BlockSocketFactory.Create<T>(options)
+  public updateId(id: string): void {
+    this.id = id
+  }
 
-    nodeLink.updateParent(this)
+  public addSocket<K>(options: IBlockSocketOptions<K>): BlockSocket<K> {
+    const blockSocket = BlockSocketFactory.Create<K>(options)
+
+    if (!blockSocket.id) {
+      throw new Error(
+        `Critical error. The ID for the block was not set in the factory`
+      )
+    }
+
+    blockSocket.updateParent(this)
 
     if (options.side === 'in') {
-      this.inSockets.set(nodeLink.id, nodeLink)
+      this.inSockets.set(blockSocket.id, blockSocket)
     }
 
     if (options.side === 'out') {
-      this.outSockets.set(nodeLink.id, nodeLink)
+      this.outSockets.set(blockSocket.id, blockSocket)
     }
 
-    return nodeLink
+    return blockSocket
   }
 
   public deleteSocket(id: UUID): boolean {
@@ -94,7 +115,7 @@ export class Block<T> implements IBlock<T> {
   }
 
   public delete(): boolean {
-    // TODO: Chris - Implement this when groups become a thing
+    // Implement this when groups become a thing
     throw NotImplementedException()
   }
 }

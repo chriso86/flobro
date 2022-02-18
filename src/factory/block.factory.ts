@@ -32,17 +32,17 @@ export class BlockFactory {
       this.RegisterDefinition(options.title, options)
     }
 
-    return new Block<T>(
-      options.id ?? Helper.GenerateUUID(),
-      options.title,
-      options.content,
-      options.position,
-      options.style ?? DEFAULT_BLOCK_STYLE,
-      options.canDelete ?? DEFAULT_BLOCK_CAN_DELETE,
-      options.canEdit ?? DEFAULT_BLOCK_CAN_EDIT,
-      options.canView ?? DEFAULT_BLOCK_CAN_VIEW,
-      options.data ?? DEFAULT_BLOCK_DATA
-    )
+    return new Block<T>({
+      id: options.id ?? Helper.GenerateUUID(),
+      title: options.title,
+      content: options.content,
+      position: options.position,
+      style: options.style ?? DEFAULT_BLOCK_STYLE,
+      canDelete: options.canDelete ?? DEFAULT_BLOCK_CAN_DELETE,
+      canEdit: options.canEdit ?? DEFAULT_BLOCK_CAN_EDIT,
+      canView: options.canView ?? DEFAULT_BLOCK_CAN_VIEW,
+      data: options.data ?? DEFAULT_BLOCK_DATA,
+    })
   }
 
   public static Spawn<T>(key: string): Block<T> {
@@ -66,7 +66,7 @@ export class BlockFactory {
   public static RegisterDefinition<T>(
     key: string,
     definition: IBlockOptions<T>
-  ) {
+  ): void {
     if (!this._definitions.get(key)) {
       this._definitions.set(key, definition)
     }

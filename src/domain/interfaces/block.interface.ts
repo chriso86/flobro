@@ -19,6 +19,6 @@ export interface IBlock<T> extends IElement<T> {
   updateContent(content: HTML): void
 
   /* Node Link Pieces (either on Nodes or along Paths) */
-  addSocket<T>(options: IBlockSocketOptions<T>): IBlockSocket<T>
+  addSocket<K>(options: IBlockSocketOptions<K>): IBlockSocket<K>
   deleteSocket(id: UUID): boolean
 }

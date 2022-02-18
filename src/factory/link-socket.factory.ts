@@ -15,14 +15,14 @@ export class LinkSocketFactory {
   }
 
   public static Create<T>(options: ILinkSocketOptions<T>): LinkSocket<T> {
-    return new LinkSocket<T>(
-      options.id ?? Helper.GenerateUUID(),
-      options.position,
-      options.style ?? DEFAULT_SOCKET_STYLE,
-      options.canDelete ?? DEFAULT_SOCKET_CAN_DELETE,
-      options.canEdit ?? DEFAULT_SOCKET_CAN_EDIT,
-      options.canView ?? DEFAULT_LINK_CAN_VIEW,
-      options.data ?? DEFAULT_SOCKET_DATA
-    )
+    return new LinkSocket<T>({
+      id: options.id ?? Helper.GenerateUUID(),
+      position: options.position,
+      style: options.style ?? DEFAULT_SOCKET_STYLE,
+      canDelete: options.canDelete ?? DEFAULT_SOCKET_CAN_DELETE,
+      canEdit: options.canEdit ?? DEFAULT_SOCKET_CAN_EDIT,
+      canView: options.canView ?? DEFAULT_LINK_CAN_VIEW,
+      data: options.data ?? DEFAULT_SOCKET_DATA,
+    })
   }
 }

@@ -16,5 +16,7 @@ export class Grid implements IGrid {
     public style: IStyle = new Style(DEFAULT_GRID_FILL, DEFAULT_GRID_STROKE)
   ) {}
 
-  public render(container: HTMLElement): void {}
+  public render(container: HTMLElement): void {
+    throw new Error('Not Implemented')
+  }
 }
