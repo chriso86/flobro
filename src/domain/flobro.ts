@@ -214,19 +214,19 @@ export class FloBro implements IFloBro {
   }
 
   public load(state: ISavedState): void {
-    const blocks = state.blocks.reduce(
+    this.state.blocks = state.blocks.reduce(
       Helper.ReduceBlockToMap,
       DEFAULT_MAP<IBlock<unknown>>()
     )
-    const blockSockets = state.blockSockets.reduce(
+    this.state.blockSockets = state.blockSockets.reduce(
       Helper.ReduceBlockSocketToMap,
       DEFAULT_MAP<IBlockSocket<unknown>>()
     )
-    const linkSockets = state.linkSockets.reduce(
+    this.state.linkSockets = state.linkSockets.reduce(
       Helper.ReduceLinkSocketToMap,
       DEFAULT_MAP<ILinkSocket<unknown>>()
     )
-    const links = state.links.reduce(
+    this.state.links = state.links.reduce(
       Helper.ReduceLinkToMap,
       DEFAULT_MAP<ILink<unknown>>()
     )
@@ -243,7 +243,7 @@ export class FloBro implements IFloBro {
       DEFAULT_MAP<ISavedLink>()
     )
 
-    blocks.forEach((block: IBlock<unknown>) => {
+    this.state.blocks.forEach((block: IBlock<unknown>) => {
       if (!block.id) {
         throw new Error(
           `Critical error. The ID for the saved block was not set.`
@@ -258,71 +258,14 @@ export class FloBro implements IFloBro {
 
       if (sb?.inSocketIds?.length) {
         block.inSockets = sb.inSocketIds.reduce(
-          (inSocketsMap: Map<UUID, IBlockSocket<unknown>>, socketId: UUID) => {
-            const blockSocket = blockSockets.get(socketId)
-            const sbs = savedBlockSockets.get(socketId)
-
-            if (!blockSocket) {
-              throw new Error('Could not find block socket.')
-            }
-            if (!sbs) {
-              throw new Error('Could not find saved block socket.')
-            }
-
-            blockSocket.updateParent(block)
-            this.state.addBlockSocket(blockSocket)
-
-            if (sbs.linkIds?.length) {
-              blockSocket.links = sbs.linkIds?.reduce(
-                (linksMap: Map<UUID, ILink<unknown>>, linkId: UUID) => {
-                  const link = links.get(linkId)
-                  const sl = savedLinks.get(linkId)
-
-                  if (!link) {
-                    throw new Error('Could not find block socket.')
-                  }
-                  if (!sl) {
-                    throw new Error('Could not find saved block socket.')
-                  }
-
-                  const originSocket = blockSockets.get(sl.originId)
-
-                  if (!originSocket) {
-                    throw new Error('Could not find origin block for link.')
-                  }
-
-                  link.updateTarget(blockSocket)
-                  link.updateOrigin(originSocket)
-                  this.state.addLink(link)
-
-                  if (sl.linkSocketIds?.length) {
-                    link.linkSockets = sl.linkSocketIds.reduce(
-                      (
-                        linkSocketsMap: Map<UUID, ILinkSocket<unknown>>,
-                        linkSocketId: UUID
-                      ) => {
-                        const linkSocket = linkSockets.get(linkSocketId)
-
-                        if (!linkSocket) {
-                          throw new Error('Could not find link socket.')
-                        }
-
-                        linkSocket.updateParent(link)
-                        this.state.addLinkSocket(linkSocket)
-
-                        return linkSocketsMap.set(linkSocketId, linkSocket)
-                      },
-                      DEFAULT_MAP<ILinkSocket<unknown>>()
-                    )
-                  }
-
-                  return linksMap.set(linkId, link)
-                },
-                DEFAULT_MAP<ILink<unknown>>()
-              )
-            }
-
-            return inSocketsMap.set(socketId, blockSocket)
+          (socketsMap: Map<UUID, IBlockSocket<unknown>>, socketId: string) => {
+            return this.reduceBlockSocket(
+              socketsMap,
+              socketId,
+              block,
+              savedBlockSockets,
+              savedLinks
+            )
           },
           DEFAULT_MAP<IBlockSocket<unknown>>()
         )
@@ -330,71 +273,14 @@ export class FloBro implements IFloBro {
 
       if (sb.outSocketIds?.length) {
         block.inSockets = sb.outSocketIds.reduce(
-          (inSocketsMap: Map<UUID, IBlockSocket<unknown>>, socketId: UUID) => {
-            const blockSocket = blockSockets.get(socketId)
-            const sbs = savedBlockSockets.get(socketId)
-
-            if (!blockSocket) {
-              throw new Error('Could not find block socket.')
-            }
-            if (!sbs) {
-              throw new Error('Could not find saved block socket.')
-            }
-
-            blockSocket.updateParent(block)
-            this.state.addBlockSocket(blockSocket)
-
-            if (sbs.linkIds?.length) {
-              blockSocket.links = sbs.linkIds?.reduce(
-                (linksMap: Map<UUID, ILink<unknown>>, linkId: UUID) => {
-                  const link = links.get(linkId)
-                  const sl = savedLinks.get(linkId)
-
-                  if (!link) {
-                    throw new Error('Could not find block socket.')
-                  }
-                  if (!sl) {
-                    throw new Error('Could not find saved block socket.')
-                  }
-
-                  const originSocket = blockSockets.get(sl.originId)
-
-                  if (!originSocket) {
-                    throw new Error('Could not find origin block for link.')
-                  }
-
-                  link.updateTarget(blockSocket)
-                  link.updateOrigin(originSocket)
-                  this.state.addLink(link)
-
-                  if (sl.linkSocketIds?.length) {
-                    link.linkSockets = sl.linkSocketIds.reduce(
-                      (
-                        linkSocketsMap: Map<UUID, ILinkSocket<unknown>>,
-                        linkSocketId: UUID
-                      ) => {
-                        const linkSocket = linkSockets.get(linkSocketId)
-
-                        if (!linkSocket) {
-                          throw new Error('Could not find link socket.')
-                        }
-
-                        linkSocket.updateParent(link)
-                        this.state.addLinkSocket(linkSocket)
-
-                        return linkSocketsMap.set(linkSocketId, linkSocket)
-                      },
-                      DEFAULT_MAP<ILinkSocket<unknown>>()
-                    )
-                  }
-
-                  return linksMap.set(linkId, link)
-                },
-                DEFAULT_MAP<ILink<unknown>>()
-              )
-            }
-
-            return inSocketsMap.set(socketId, blockSocket)
+          (socketsMap: Map<UUID, IBlockSocket<unknown>>, socketId: string) => {
+            return this.reduceBlockSocket(
+              socketsMap,
+              socketId,
+              block,
+              savedBlockSockets,
+              savedLinks
+            )
           },
           DEFAULT_MAP<IBlockSocket<unknown>>()
         )
@@ -402,5 +288,98 @@ export class FloBro implements IFloBro {
 
       this.state.addBlock(block)
     })
+  }
+
+  private reduceBlockSocket(
+    socketsMap: Map<UUID, IBlockSocket<unknown>>,
+    socketId: UUID,
+    block: IBlock<unknown>,
+    savedBlockSockets: Map<UUID, ISavedBlockSocket>,
+    savedLinks: Map<UUID, ISavedLink>
+  ): Map<UUID, IBlockSocket<unknown>> {
+    const blockSocket = this.state.blockSockets.get(socketId)
+    const sbs = savedBlockSockets.get(socketId)
+
+    if (!blockSocket) {
+      throw new Error('Could not find block socket.')
+    }
+    if (!sbs) {
+      throw new Error('Could not find saved block socket.')
+    }
+
+    blockSocket.updateParent(block)
+    this.state.addBlockSocket(blockSocket)
+
+    if (sbs.linkIds?.length) {
+      blockSocket.links = sbs.linkIds?.reduce(
+        (linksMap: Map<UUID, ILink<unknown>>, linkId: string) => {
+          return this.reduceLink(linksMap, linkId, savedLinks)
+        },
+        DEFAULT_MAP<ILink<unknown>>()
+      )
+    }
+
+    return socketsMap.set(socketId, blockSocket)
+  }
+
+  private reduceLink(
+    linksMap: Map<UUID, ILink<unknown>>,
+    linkId: UUID,
+    savedLinks: Map<UUID, ISavedLink>
+  ) {
+    const link = this.state.links.get(linkId)
+    const sl = savedLinks.get(linkId)
+
+    if (!link) {
+      throw new Error('Could not find link.')
+    }
+    if (!sl) {
+      throw new Error('Could not find saved link.')
+    }
+
+    const originSocket = this.state.blockSockets.get(sl.originId)
+    const targetSocket = this.state.blockSockets.get(sl.targetId)
+
+    if (!originSocket) {
+      throw new Error('Could not find origin block for link.')
+    }
+    if (!targetSocket) {
+      throw new Error('Could not find target block for link.')
+    }
+
+    link.updateTarget(targetSocket)
+    link.updateOrigin(originSocket)
+    this.state.addLink(link)
+
+    if (sl.linkSocketIds?.length) {
+      link.linkSockets = sl.linkSocketIds.reduce(
+        (
+          linkSocketMap: Map<UUID, ILinkSocket<unknown>>,
+          linkSocketId: UUID
+        ) => {
+          return this.reduceLinkSockets(linkSocketMap, linkSocketId, link)
+        },
+        DEFAULT_MAP<ILinkSocket<unknown>>()
+      )
+    }
+
+    return linksMap.set(linkId, link)
+  }
+
+  private reduceLinkSockets(
+    linkSocketsMap: Map<UUID, ILinkSocket<unknown>>,
+    linkSocketId: UUID,
+    link: ILink<unknown>
+  ) {
+    const linkSocket = this.state.linkSockets.get(linkSocketId)
+
+    if (!linkSocket) {
+      throw new Error('Could not find link socket.')
+    }
+
+    linkSocket.updateParent(link)
+    this.state.addLinkSocket(linkSocket)
+
+    return linkSocketsMap.set(linkSocketId, linkSocket)
   }
 }
