@@ -1,3 +1,5 @@
+# Copyright (c) 2021 Tom Chen (tomchen.org)
+
 command_exists () {
   command -v "$1" >/dev/null 2>&1
 }

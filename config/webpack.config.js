@@ -1,3 +1,5 @@
+/* Copyright (c) 2021 Tom Chen (tomchen.org) */
+
 const path = require('path')
 
 module.exports = {

@@ -1,3 +1,5 @@
+/* Copyright (c) 2021 Tom Chen (tomchen.org) */
+
 /* eslint-disable */
 const fs = require('fs')
 const Path = require('path')

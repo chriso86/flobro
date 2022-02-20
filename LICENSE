@@ -1,6 +1,16 @@
 MIT License
 
+Copyright (c) 2022 Christopher Oliver (oliverdynamics.com)
+
+Based on a template created by Tom Chen with which the original template
+carries the copyright below:
 Copyright (c) 2021 Tom Chen (tomchen.org)
+
+The library code written within the "src" folder is originally authored
+under the copyright held by Christopher Oliver as displayed above, and is
+not authored as a part of the original template used to create this package.
+Please feel free to replace this disclaimer should you wish to fork this
+repository.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

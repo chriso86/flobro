@@ -1,3 +1,5 @@
+/* Copyright (c) 2021 Tom Chen (tomchen.org) */
+
 module.exports = {
   roots: ['<rootDir>/test'],
   testMatch: [
@@ -11,10 +13,8 @@ module.exports = {
   },
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.json'
-    }
+      tsconfig: 'tsconfig.json',
+    },
   },
-  setupFiles: [
-    './config/__mocks__/dom.js'
-  ]
+  setupFiles: ['./config/__mocks__/dom.js'],
 }
