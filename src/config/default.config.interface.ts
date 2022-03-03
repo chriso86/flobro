@@ -1,5 +1,4 @@
-import { Decimal, HEXColor, UnitOfMeasure } from '../../utils/custom-types'
-import { ISvgConfig } from './svg-config.interface'
+import { Decimal, HEXColor, UnitOfMeasure } from '../utils/custom-types'
 
 export interface IDefaultConfig {
   DefaultStrokeWidth: UnitOfMeasure

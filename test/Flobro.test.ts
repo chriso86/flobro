@@ -41,7 +41,7 @@ const GenerateUUID = () => {
   )}-${GenerateUUIDSection(4)}-${GenerateUUIDSection(15)}`
 }
 
-beforeAll(() => {
+beforeEach(() => {
   //@ts-ignore
   ;(global as any).crypto = {
     getRandomValues<T>(array: T): T {

@@ -92,7 +92,10 @@ export class Flobro implements IFlobro {
   }
 
   public clear(): void {
-    // TODO: Implement
+    const container = this.state.workArea.container
+
+    this._stateService.clear()
+    this.render(container)
   }
 
   public save(): ISavedState {

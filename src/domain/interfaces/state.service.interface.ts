@@ -38,6 +38,7 @@ export interface IStateService {
 
   save(): ISavedState
   load(state: ISavedState): void
+  clear(): void
 
   onUpdate(callback: (state: IState) => void): ISubscription
 }

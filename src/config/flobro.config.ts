@@ -1,4 +1,4 @@
-import { IFlobroConfig } from '../domain/interfaces/flobro-config.interface'
+import { IFlobroConfig } from './flobro-config.interface'
 import {
   DEFAULT_BLOCK_CAN_DELETE,
   DEFAULT_BLOCK_CAN_EDIT,
@@ -39,7 +39,7 @@ import {
   DEFAULT_SVG_ZOOM_DISPLAY_CLASS,
 } from '../utils/default.constants'
 import { ISvgConfig } from '../domain/interfaces/svg-config.interface'
-import { IDefaultConfig } from '../domain/interfaces/default.config.interface'
+import { IDefaultConfig } from './default.config.interface'
 
 export class FlobroConfig {
   private static _config: IFlobroConfig = {
@@ -56,8 +56,7 @@ export class FlobroConfig {
   }
 
   public static Configure(config: Partial<IFlobroConfig>): IFlobroConfig {
-    this._config.svgConfig = config.svgConfig ?? DEFAULT_SVG_CONFIG
-    this._config.defaults = {
+    const generalDefaults = {
       DefaultStrokeWidth:
         config.defaults?.DefaultStrokeWidth ?? DEFAULT_STROKE_WIDTH,
       DefaultStokeColor:
@@ -69,6 +68,9 @@ export class FlobroConfig {
       DefaultBlockElementHeight:
         config.defaults?.DefaultBlockElementHeight ??
         DEFAULT_BLOCK_ELEMENT_HEIGHT,
+    }
+
+    const SVGDefaults = {
       DefaultSvgWidth: config.defaults?.DefaultSvgWidth ?? DEFAULT_SVG_WIDTH,
       DefaultSvgHeight: config.defaults?.DefaultSvgHeight ?? DEFAULT_SVG_HEIGHT,
       DefaultSvgNamespace:
@@ -79,6 +81,9 @@ export class FlobroConfig {
       DefaultSvgZoomDisplayClass:
         config.defaults?.DefaultSvgZoomDisplayClass ??
         DEFAULT_SVG_ZOOM_DISPLAY_CLASS,
+    }
+
+    const gridDefaults = {
       DefaultGridSize: config.defaults?.DefaultGridSize ?? DEFAULT_GRID_SIZE,
       DefaultGridSnap: config.defaults?.DefaultGridSnap ?? DEFAULT_GRID_SNAP,
       DefaultGridFillColor:
@@ -87,6 +92,9 @@ export class FlobroConfig {
         config.defaults?.DefaultGridStrokeWidth ?? DEFAULT_GRID_STROKE_WIDTH,
       DefaultGridStrokeColor:
         config.defaults?.DefaultGridStrokeColor ?? DEFAULT_GRID_STROKE_COLOR,
+    }
+
+    const socketDefaults = {
       DefaultSocketFillColor:
         config.defaults?.DefaultSocketFillColor ?? DEFAULT_SOCKET_FILL_COLOR,
       DefaultSocketStrokeWidth:
@@ -103,6 +111,9 @@ export class FlobroConfig {
         config.defaults?.DefaultSocketCanEdit ?? DEFAULT_SOCKET_CAN_EDIT,
       DefaultSocketCanView:
         config.defaults?.DefaultSocketCanView ?? DEFAULT_SOCKET_CAN_VIEW,
+    }
+
+    const blockDefaults = {
       DefaultBlockFillColor:
         config.defaults?.DefaultBlockFillColor ?? DEFAULT_BLOCK_FILL_COLOR,
       DefaultBlockStrokeWidth:
@@ -119,6 +130,9 @@ export class FlobroConfig {
         config.defaults?.DefaultBlockCanEdit ?? DEFAULT_BLOCK_CAN_EDIT,
       DefaultBlockCanView:
         config.defaults?.DefaultBlockCanView ?? DEFAULT_BLOCK_CAN_VIEW,
+    }
+
+    const linkDefaults = {
       DefaultLinkStrokeWidth:
         config.defaults?.DefaultLinkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH,
       DefaultLinkStrokeColor:
@@ -129,6 +143,16 @@ export class FlobroConfig {
         config.defaults?.DefaultLinkCanEdit ?? DEFAULT_LINK_CAN_EDIT,
       DefaultLinkCanView:
         config.defaults?.DefaultLinkCanView ?? DEFAULT_LINK_CAN_VIEW,
+    }
+
+    this._config.svgConfig = config.svgConfig ?? DEFAULT_SVG_CONFIG
+    this._config.defaults = {
+      ...generalDefaults,
+      ...SVGDefaults,
+      ...gridDefaults,
+      ...socketDefaults,
+      ...blockDefaults,
+      ...linkDefaults,
     }
 
     return this._config

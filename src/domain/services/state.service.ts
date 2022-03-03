@@ -22,7 +22,7 @@ import { ISavedLinkSocket } from '../interfaces/saved-link-socket.interface'
 import { ISubscription } from '../interfaces/subscription.interface'
 
 export class StateService implements IStateService {
-  private _state: IBehaviorSubject<IState> = new BehaviorSubject<IState>({
+  private _DEFAULT_STATE = {
     id: Helper.GenerateUUID(),
     workArea: new WorkArea(
       {} as HTMLElement,
@@ -35,7 +35,10 @@ export class StateService implements IStateService {
     blockSockets: new Map<UUID, IBlockSocket<unknown>>(),
     linkSockets: new Map<UUID, ILinkSocket<unknown>>(),
     links: new Map<UUID, ILink<unknown>>(),
-  })
+  }
+  private _state: IBehaviorSubject<IState> = new BehaviorSubject<IState>(
+    this._DEFAULT_STATE
+  )
 
   public get state(): IState {
     return this._state.getValue()
@@ -336,38 +339,39 @@ export class StateService implements IStateService {
         throw new Error('Could not find saved block.')
       }
 
+      const reduceBlockSocket = (
+        socketsMap: Map<UUID, IBlockSocket<unknown>>,
+        socketId: string
+      ) => {
+        return this.reduceBlockSocket(
+          socketsMap,
+          socketId,
+          block,
+          savedBlockSockets,
+          savedLinks
+        )
+      }
+
       if (sb?.inSocketIds?.length) {
         block.inSockets = sb.inSocketIds.reduce(
-          (socketsMap: Map<UUID, IBlockSocket<unknown>>, socketId: string) => {
-            return this.reduceBlockSocket(
-              socketsMap,
-              socketId,
-              block,
-              savedBlockSockets,
-              savedLinks
-            )
-          },
+          reduceBlockSocket,
           DEFAULT_MAP<IBlockSocket<unknown>>()
         )
       }
 
       if (sb.outSocketIds?.length) {
         block.inSockets = sb.outSocketIds.reduce(
-          (socketsMap: Map<UUID, IBlockSocket<unknown>>, socketId: string) => {
-            return this.reduceBlockSocket(
-              socketsMap,
-              socketId,
-              block,
-              savedBlockSockets,
-              savedLinks
-            )
-          },
+          reduceBlockSocket,
           DEFAULT_MAP<IBlockSocket<unknown>>()
         )
       }
 
       this.addBlock(block)
     })
+  }
+
+  public clear(): void {
+    this._state.next(this._DEFAULT_STATE)
   }
 
   public onUpdate(callback: (state: IState) => void): ISubscription {
