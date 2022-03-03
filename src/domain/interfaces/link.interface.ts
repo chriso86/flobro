@@ -1,9 +1,9 @@
 import { IElement } from './element.interface'
 import { IBlockSocket } from './block-socket.interface'
 import { ILinkSocket } from './link-socket.interface'
-import { UUID } from './custom-types'
+import { UUID } from '../../utils/custom-types'
 import { ILinkSocketOptions } from './link-socket-options.interface'
-import { LinkSocket } from '../link.socket'
+import { LinkSocket } from '../models/link.socket'
 
 export interface ILink<T> extends IElement<T> {
   startX: number

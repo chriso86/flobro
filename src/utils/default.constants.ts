@@ -1,12 +1,8 @@
-import { Fill } from '../domain/fill'
-import { Stroke } from '../domain/stroke'
-import { BlockStyle } from '../domain/block-style'
-import { CircleStyle } from '../domain/circle-style'
-import { Style } from '../domain/style'
-import { BlockSocket } from '../domain/block.socket'
-import { ILinkSocket } from '../domain/interfaces/link-socket.interface'
-import { ILink } from '../domain/interfaces/link.interface'
-import { UUID } from '../domain/interfaces/custom-types'
+import { UUID } from './custom-types'
+import { ISvgConfig } from '../domain/interfaces/svg-config.interface'
+
+/*  Internal Defaults */
+export const DEFAULT_MAP = <T>(): Map<UUID, T> => new Map<UUID, T>()
 
 /* General Defaults */
 export const DEFAULT_STROKE_WIDTH = 2
@@ -14,78 +10,67 @@ export const DEFAULT_STOKE_COLOR = '#666'
 export const DEFAULT_FILL_COLOR = '#fff;'
 export const DEFAULT_BLOCK_ELEMENT_WIDTH = '100%'
 export const DEFAULT_BLOCK_ELEMENT_HEIGHT = 100
-export const DEFAULT_MAP = <T>(): Map<UUID, T> => new Map<UUID, T>()
 
 /* SVG Defaults */
+export const DEFAULT_SVG_WIDTH = 1920
+export const DEFAULT_SVG_HEIGHT = 1080
+export const DEFAULT_SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
+export const DEFAULT_SVG_ID_SELECTOR = 'flobro-svg-container'
 export const DEFAULT_SVG_CLASS = 'flobro-svg-container'
-export const DEFAULT_SVG_WIDTH_MULTIPLIER = 2.5
-export const DEFAULT_SVG_HEIGHT_MULTIPLIER = 2
-export const DEFAULT_ZOOM_MULTIPLIER = 0.2
+export const DEFAULT_SVG_CONFIG: ISvgConfig = {
+  viewportSelector: '',
+  panEnabled: true,
+  controlIconsEnabled: false,
+  zoomEnabled: true,
+  dblClickZoomEnabled: true,
+  mouseWheelZoomEnabled: true,
+  preventMouseEventsDefault: true,
+  zoomScaleSensitivity: 0.2,
+  minZoom: 0.5,
+  maxZoom: 10,
+  fit: true,
+  contain: false,
+  center: true,
+  refreshRate: 'auto',
+  beforeZoom: () => null,
+  onZoom: () => null,
+  beforePan: () => null,
+  onPan: () => null,
+  onUpdatedCTM: () => null,
+  customEventsHandler: {},
+  eventsListenerElement: null,
+}
+export const DEFAULT_SVG_ZOOM_DISPLAY_CLASS = 'flobro-zoom-display'
 
 /* Grid Defaults */
-export const DEFAULT_GRID_SIZE = 20
+export const DEFAULT_GRID_SIZE = 100
 export const DEFAULT_GRID_SNAP = true
 export const DEFAULT_GRID_FILL_COLOR = DEFAULT_FILL_COLOR
 export const DEFAULT_GRID_STROKE_WIDTH = DEFAULT_STROKE_WIDTH
 export const DEFAULT_GRID_STROKE_COLOR = DEFAULT_STOKE_COLOR
-export const DEFAULT_GRID_FILL = new Fill(DEFAULT_GRID_FILL_COLOR)
-export const DEFAULT_GRID_STROKE = new Stroke(
-  DEFAULT_GRID_STROKE_COLOR,
-  DEFAULT_GRID_STROKE_WIDTH
-)
 
 /* Link Defaults */
 export const DEFAULT_SOCKET_FILL_COLOR = DEFAULT_FILL_COLOR
 export const DEFAULT_SOCKET_STROKE_WIDTH = DEFAULT_STROKE_WIDTH
 export const DEFAULT_SOCKET_STROKE_COLOR = DEFAULT_STOKE_COLOR
-export const DEFAULT_SOCKET_FILL = new Fill(DEFAULT_SOCKET_FILL_COLOR)
-export const DEFAULT_SOCKET_STROKE = new Stroke(
-  DEFAULT_SOCKET_STROKE_COLOR,
-  DEFAULT_SOCKET_STROKE_WIDTH
-)
 export const DEFAULT_SOCKET_RADIUS = 5
 export const DEFAULT_SOCKET_CAN_DELETE = true
 export const DEFAULT_SOCKET_CAN_EDIT = true
 export const DEFAULT_SOCKET_CAN_VIEW = true
-export const DEFAULT_SOCKET_STYLE = new CircleStyle()
-export const DEFAULT_SOCKET_DATA = null
-export const DEFAULT_SOCKET_PARENT = null
-
-export const DEFAULT_BLOCK_SOCKET_LINKS = new Map<UUID, ILink<unknown>>()
 
 /* Node Defaults */
 export const DEFAULT_BLOCK_FILL_COLOR = '#9cf'
 export const DEFAULT_BLOCK_STROKE_WIDTH = DEFAULT_STROKE_WIDTH
 export const DEFAULT_BLOCK_STROKE_COLOR = DEFAULT_STOKE_COLOR
-export const DEFAULT_BLOCK_FILL = new Fill(DEFAULT_BLOCK_FILL_COLOR)
-export const DEFAULT_BLOCK_STROKE = new Stroke(
-  DEFAULT_BLOCK_STROKE_COLOR,
-  DEFAULT_BLOCK_STROKE_WIDTH
-)
 export const DEFAULT_BLOCK_WIDTH = DEFAULT_BLOCK_ELEMENT_WIDTH
 export const DEFAULT_BLOCK_HEIGHT = DEFAULT_BLOCK_ELEMENT_HEIGHT
-export const DEFAULT_BLOCK_STYLE = new BlockStyle(
-  DEFAULT_BLOCK_WIDTH,
-  DEFAULT_BLOCK_HEIGHT
-)
-export const DEFAULT_BLOCK_SOCKETS = new Map<UUID, BlockSocket<unknown>>()
 export const DEFAULT_BLOCK_CAN_DELETE = true
 export const DEFAULT_BLOCK_CAN_EDIT = true
 export const DEFAULT_BLOCK_CAN_VIEW = true
-export const DEFAULT_BLOCK_DATA = null
 
 /* Path Defaults */
 export const DEFAULT_LINK_STROKE_WIDTH = DEFAULT_STROKE_WIDTH
 export const DEFAULT_LINK_STROKE_COLOR = DEFAULT_STOKE_COLOR
-export const DEFAULT_LINK_STROKE = new Stroke(
-  DEFAULT_LINK_STROKE_COLOR,
-  DEFAULT_LINK_STROKE_WIDTH
-)
-export const DEFAULT_LINK_STYLE = new Style()
 export const DEFAULT_LINK_CAN_DELETE = true
 export const DEFAULT_LINK_CAN_EDIT = true
 export const DEFAULT_LINK_CAN_VIEW = true
-export const DEFAULT_LINK_ORIGIN = null
-export const DEFAULT_LINK_TARGET = null
-export const DEFAULT_LINK_DATA = null
-export const DEFAULT_LINK_SOCKETS = new Map<UUID, ILinkSocket<unknown>>()

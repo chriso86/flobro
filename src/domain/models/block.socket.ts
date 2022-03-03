@@ -1,21 +1,17 @@
 import { Socket } from './socket'
-import {
-  DEFAULT_BLOCK_SOCKET_LINKS,
-  DEFAULT_SOCKET_PARENT,
-} from '../utils/default.constants'
 import { Link } from './link'
-import { LinkFactory } from '../factory/link.factory'
-import { IBlock } from './interfaces/block.interface'
-import { IBlockSocket } from './interfaces/block-socket.interface'
-import { ILinkOptions } from './interfaces/link-options.interface'
-import { ILink } from './interfaces/link.interface'
-import { Side, UUID } from './interfaces/custom-types'
-import { IBlockSocketOptions } from './interfaces/block-socket-options.interface'
+import { LinkFactory } from '../../factory/link.factory'
+import { IBlock } from '../interfaces/block.interface'
+import { IBlockSocket } from '../interfaces/block-socket.interface'
+import { ILinkOptions } from '../interfaces/link-options.interface'
+import { ILink } from '../interfaces/link.interface'
+import { Side, UUID } from '../../utils/custom-types'
+import { IBlockSocketOptions } from '../interfaces/block-socket-options.interface'
 
 export class BlockSocket<T> extends Socket<T> implements IBlockSocket<T> {
   public side: Side
-  public parent: IBlock<unknown> | null = DEFAULT_SOCKET_PARENT
-  public links: Map<UUID, ILink<unknown>> = DEFAULT_BLOCK_SOCKET_LINKS
+  public parent: IBlock<unknown> | null = null
+  public links: Map<UUID, ILink<unknown>> = new Map<UUID, ILink<unknown>>()
 
   constructor(options: IBlockSocketOptions<T>) {
     super({
@@ -30,7 +26,7 @@ export class BlockSocket<T> extends Socket<T> implements IBlockSocket<T> {
     this.side = options.side
   }
 
-  public render(): void {
+  public override render(): void {
     throw new Error('Not implemented')
   }
 
@@ -66,7 +62,7 @@ export class BlockSocket<T> extends Socket<T> implements IBlockSocket<T> {
     return false
   }
 
-  public delete(): void {
+  public override delete(): void {
     if (!this.id) {
       throw new Error(
         `No valid ID has been assigned for the block socket you're trying to delete.`

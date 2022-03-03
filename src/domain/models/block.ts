@@ -1,33 +1,43 @@
-import { BlockSocketFactory } from '../factory/block-socket.factory'
-import {
-  DEFAULT_BLOCK_CAN_DELETE,
-  DEFAULT_BLOCK_CAN_EDIT,
-  DEFAULT_BLOCK_CAN_VIEW,
-  DEFAULT_BLOCK_DATA,
-  DEFAULT_BLOCK_SOCKETS,
-  DEFAULT_BLOCK_STYLE,
-} from '../utils/default.constants'
+import { BlockSocketFactory } from '../../factory/block-socket.factory'
 import { BlockSocket } from './block.socket'
-import { NotImplementedException } from '../utils/error-constants'
-import { IBlock } from './interfaces/block.interface'
-import { IBlockStyle } from './interfaces/block-style.interface'
-import { IBlockSocketOptions } from './interfaces/block-socket-options.interface'
-import { ICoordinates } from './interfaces/coordinates.interface'
-import { HTML, UUID } from './interfaces/custom-types'
-import { IBlockOptions } from './interfaces/block-options.interface'
+import { NotImplementedException } from '../../utils/error-constants'
+import { BlockStyle } from './block-style'
+import { FlobroConfig } from '../../config/flobro.config'
+import { Fill } from './fill'
+import { Stroke } from './stroke'
+import { IBlock } from '../interfaces/block.interface'
+import { IBlockStyle } from '../interfaces/block-style.interface'
+import { IBlockSocketOptions } from '../interfaces/block-socket-options.interface'
+import { ICoordinates } from '../interfaces/coordinates.interface'
+import { HTML, UUID } from '../../utils/custom-types'
+import { IBlockOptions } from '../interfaces/block-options.interface'
 
 export class Block<T> implements IBlock<T> {
   public id?: UUID
   public title: string
   public content: HTML
   public position: ICoordinates
-  public style: IBlockStyle = DEFAULT_BLOCK_STYLE
-  public canDelete: boolean = DEFAULT_BLOCK_CAN_DELETE
-  public canEdit: boolean = DEFAULT_BLOCK_CAN_EDIT
-  public canView: boolean = DEFAULT_BLOCK_CAN_VIEW
-  public data: T | null = DEFAULT_BLOCK_DATA
-  public inSockets: Map<UUID, BlockSocket<unknown>> = DEFAULT_BLOCK_SOCKETS
-  public outSockets: Map<UUID, BlockSocket<unknown>> = DEFAULT_BLOCK_SOCKETS
+  public style: IBlockStyle = new BlockStyle(
+    FlobroConfig.defaults.DefaultBlockWidth,
+    FlobroConfig.defaults.DefaultBlockHeight,
+    new Fill(FlobroConfig.defaults.DefaultBlockFillColor),
+    new Stroke(
+      FlobroConfig.defaults.DefaultBlockStrokeColor,
+      FlobroConfig.defaults.DefaultBlockStrokeWidth
+    )
+  )
+  public canDelete: boolean = FlobroConfig.defaults.DefaultBlockCanDelete
+  public canEdit: boolean = FlobroConfig.defaults.DefaultBlockCanEdit
+  public canView: boolean = FlobroConfig.defaults.DefaultBlockCanView
+  public data: T | null = null
+  public inSockets: Map<UUID, BlockSocket<unknown>> = new Map<
+    UUID,
+    BlockSocket<unknown>
+  >()
+  public outSockets: Map<UUID, BlockSocket<unknown>> = new Map<
+    UUID,
+    BlockSocket<unknown>
+  >()
 
   constructor(options: IBlockOptions<T>) {
     this.id = options.id

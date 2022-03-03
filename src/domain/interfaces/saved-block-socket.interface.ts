@@ -1,4 +1,4 @@
-import { Side, UUID } from './custom-types'
+import { Side, UUID } from '../../utils/custom-types'
 import { ISavedEntity } from './saved-entity.interface'
 import { ICircleStyle } from './circle-style.interface'
 

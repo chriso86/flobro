@@ -2,21 +2,20 @@ import {
   DEFAULT_LINK_CAN_DELETE,
   DEFAULT_LINK_CAN_EDIT,
   DEFAULT_LINK_CAN_VIEW,
-  DEFAULT_LINK_DATA,
-  DEFAULT_LINK_ORIGIN,
-  DEFAULT_LINK_SOCKETS,
-  DEFAULT_LINK_STYLE,
-  DEFAULT_LINK_TARGET,
-} from '../utils/default.constants'
+} from '../../utils/default.constants'
 import { LinkSocket } from './link.socket'
-import { LinkSocketFactory } from '../factory/link-socket.factory'
-import { IStyle } from './interfaces/style.interface'
-import { IBlockSocket } from './interfaces/block-socket.interface'
-import { ILinkSocket } from './interfaces/link-socket.interface'
-import { ILinkSocketOptions } from './interfaces/link-socket-options.interface'
-import { ILink } from './interfaces/link.interface'
-import { UUID } from './interfaces/custom-types'
-import { ILinkOptions } from './interfaces/link-options.interface'
+import { LinkSocketFactory } from '../../factory/link-socket.factory'
+import { IStyle } from '../interfaces/style.interface'
+import { IBlockSocket } from '../interfaces/block-socket.interface'
+import { ILinkSocket } from '../interfaces/link-socket.interface'
+import { ILinkSocketOptions } from '../interfaces/link-socket-options.interface'
+import { ILink } from '../interfaces/link.interface'
+import { UUID } from '../../utils/custom-types'
+import { ILinkOptions } from '../interfaces/link-options.interface'
+import { FlobroConfig } from '../../config/flobro.config'
+import { Fill } from './fill'
+import { Stroke } from './stroke'
+import { Style } from './style'
 
 export class Link<T> implements ILink<T> {
   public id?: string
@@ -28,14 +27,23 @@ export class Link<T> implements ILink<T> {
   public endCurveY: number
   public endX: number
   public endY: number
-  public linkSockets: Map<string, ILinkSocket<unknown>> = DEFAULT_LINK_SOCKETS
-  public origin: IBlockSocket<unknown> | null = DEFAULT_LINK_ORIGIN
-  public target: IBlockSocket<unknown> | null = DEFAULT_LINK_TARGET
+  public linkSockets: Map<string, ILinkSocket<unknown>> = new Map<
+    string,
+    ILinkSocket<unknown>
+  >()
+  public origin: IBlockSocket<unknown> | null = null
+  public target: IBlockSocket<unknown> | null = null
   public canView: boolean = DEFAULT_LINK_CAN_VIEW
   public canEdit: boolean = DEFAULT_LINK_CAN_EDIT
   public canDelete: boolean = DEFAULT_LINK_CAN_DELETE
-  public style: IStyle = DEFAULT_LINK_STYLE
-  public data: T | null | undefined = DEFAULT_LINK_DATA
+  public style: IStyle = new Style(
+    new Fill(FlobroConfig.defaults.DefaultBlockFillColor),
+    new Stroke(
+      FlobroConfig.defaults.DefaultBlockStrokeColor,
+      FlobroConfig.defaults.DefaultBlockStrokeWidth
+    )
+  )
+  public data: T | null | undefined
 
   constructor(options: ILinkOptions<T>) {
     this.id = options.id

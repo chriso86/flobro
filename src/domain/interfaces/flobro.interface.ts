@@ -1,19 +1,22 @@
 import { IState } from './state.interface'
-import { ITheme } from './theme.interface'
 import { IBlock } from './block.interface'
 import { IBlockOptions } from './block-options.interface'
-import { UUID } from './custom-types'
+import { UUID } from '../../utils/custom-types'
+import { ISavedState } from './saved-state.interface'
+import { FlobroEvent } from '../../enums/flobro-event.enum'
+import { IBehaviorSubject } from './behavior-subject.interface'
 
-export interface IFloBro {
+export interface IFlobro {
   state: IState
 
-  render(): void
-  changeTheme(theme: Partial<ITheme>): void
+  render(container: HTMLElement): SVGSVGElement
 
-  //save(): ISavedState;
-  //load(state: ISavedState): void;
+  save(): ISavedState
+  load(state: ISavedState): void
   clear(): void
 
   addBlock<T>(options: IBlockOptions<T>): IBlock<T>
   deleteBlock(id: UUID): void
+
+  on(event: FlobroEvent): IBehaviorSubject<unknown>
 }

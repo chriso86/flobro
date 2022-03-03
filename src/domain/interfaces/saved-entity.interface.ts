@@ -1,4 +1,4 @@
-import { UUID } from './custom-types'
+import { UUID } from '../../utils/custom-types'
 import { IStyle } from './style.interface'
 
 export interface ISavedEntity {

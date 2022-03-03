@@ -1,10 +1,11 @@
 import { IStyle } from './style.interface'
-import { UnitOfMeasure } from './custom-types'
+import { Decimal } from '../../utils/custom-types'
+import { IState } from './state.interface'
 
 export interface IGrid {
-  gridSize: UnitOfMeasure
+  gridSize: Decimal
   snapToGrid: boolean
   style: IStyle
 
-  render(container: HTMLElement): void
+  render(state: IState): void
 }

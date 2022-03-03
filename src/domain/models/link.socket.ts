@@ -1,13 +1,12 @@
 import { Socket } from './socket'
-import { DEFAULT_SOCKET_PARENT } from '../utils/default.constants'
-import { ICoordinates } from './interfaces/coordinates.interface'
-import { ILinkSocket } from './interfaces/link-socket.interface'
-import { ILink } from './interfaces/link.interface'
-import { ILinkSocketOptions } from './interfaces/link-socket-options.interface'
+import { ICoordinates } from '../interfaces/coordinates.interface'
+import { ILinkSocket } from '../interfaces/link-socket.interface'
+import { ILink } from '../interfaces/link.interface'
+import { ILinkSocketOptions } from '../interfaces/link-socket-options.interface'
 
 export class LinkSocket<T> extends Socket<T> implements ILinkSocket<T> {
   public position: ICoordinates
-  public parent: ILink<unknown> | null = DEFAULT_SOCKET_PARENT
+  public parent: ILink<unknown> | null = null
 
   constructor(options: ILinkSocketOptions<T>) {
     super({
@@ -22,11 +21,11 @@ export class LinkSocket<T> extends Socket<T> implements ILinkSocket<T> {
     this.position = options.position
   }
 
-  public render(): void {
+  public override render(): void {
     throw new Error(`Not Implemented`)
   }
 
-  public updateId(id: string): void {
+  public override updateId(id: string): void {
     this.id = id
   }
 
@@ -38,7 +37,7 @@ export class LinkSocket<T> extends Socket<T> implements ILinkSocket<T> {
     this.position = position
   }
 
-  public delete(): void {
+  public override delete(): void {
     if (!this.id) {
       throw new Error(
         `No valid ID has been assigned for the link socket you're trying to delete.`

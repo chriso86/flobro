@@ -1,4 +1,4 @@
-import { HTML, UUID } from './custom-types'
+import { HTML, UUID } from '../../utils/custom-types'
 import { ICoordinates } from './coordinates.interface'
 import { IBlockStyle } from './block-style.interface'
 import { ISavedEntity } from './saved-entity.interface'

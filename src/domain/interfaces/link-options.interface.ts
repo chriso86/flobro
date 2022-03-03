@@ -1,6 +1,7 @@
-import { IElementOptions } from './element-options.interface'
+import { IStyle } from './style.interface'
 
-export interface ILinkOptions<T> extends IElementOptions<T> {
+export interface ILinkOptions<T> {
+  id?: string
   startX: number
   startY: number
   startCurveX: number
@@ -9,4 +10,9 @@ export interface ILinkOptions<T> extends IElementOptions<T> {
   endCurveY: number
   endX: number
   endY: number
+  canView: boolean
+  canEdit: boolean
+  canDelete: boolean
+  style: IStyle
+  data: T | null | undefined
 }

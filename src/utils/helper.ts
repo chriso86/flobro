@@ -10,7 +10,7 @@ import { IBlockOptions } from '../domain/interfaces/block-options.interface'
 import { ILinkSocketOptions } from '../domain/interfaces/link-socket-options.interface'
 import { ILinkOptions } from '../domain/interfaces/link-options.interface'
 import { ILink } from '../domain/interfaces/link.interface'
-import { UUID } from '../domain/interfaces/custom-types'
+import { UUID } from './custom-types'
 import { ISavedBlock } from '../domain/interfaces/saved-block.interface'
 import { ISavedBlockSocket } from '../domain/interfaces/saved-block-socket.interface'
 import { ISavedLink } from '../domain/interfaces/saved-link.interface'
@@ -25,6 +25,12 @@ export class Helper {
         (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
       ).toString(16)
     )
+  }
+
+  public static noop = (): null => null
+
+  public static ToNearestHundredth(value: number): number {
+    return Math.round(value * 0.01) * 100
   }
 
   public static ReduceBlockToMap(

@@ -2,7 +2,7 @@ import { IBlock } from './block.interface'
 import { ILinkOptions } from './link-options.interface'
 import { ILink } from './link.interface'
 import { ISocket } from './socket.interface'
-import { Side, UUID } from './custom-types'
+import { Side, UUID } from '../../utils/custom-types'
 
 export interface IBlockSocket<T> extends ISocket<T> {
   parent?: IBlock<unknown> | null

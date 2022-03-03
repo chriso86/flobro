@@ -1,9 +1,9 @@
 import {
   DEFAULT_STOKE_COLOR,
   DEFAULT_STROKE_WIDTH,
-} from '../utils/default.constants'
-import { IStroke } from './interfaces/stroke.interface'
-import { UnitOfMeasure, Url } from './interfaces/custom-types'
+} from '../../utils/default.constants'
+import { IStroke } from '../interfaces/stroke.interface'
+import { UnitOfMeasure, Url } from '../../utils/custom-types'
 
 export class Stroke implements IStroke {
   constructor(

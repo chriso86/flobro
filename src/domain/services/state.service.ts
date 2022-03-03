@@ -1,46 +1,44 @@
-import { IFloBro } from './interfaces/flobro.interface'
-import { ITheme } from './interfaces/theme.interface'
-import { IBlock } from './interfaces/block.interface'
-import { IGrid } from './interfaces/grid.interface'
-import { ILinkSocket } from './interfaces/link-socket.interface'
-import { IBlockOptions } from './interfaces/block-options.interface'
-import { ILink } from './interfaces/link.interface'
-import { IState } from './interfaces/state.interface'
-import { ISavedState } from './interfaces/saved-state.interface'
-import { IBlockSocket } from './interfaces/block-socket.interface'
-import { Helper } from '../utils/helper'
-import { BlockFactory } from '../factory/block.factory'
-import {
-  DEFAULT_MAP,
-  DEFAULT_SVG_CLASS,
-  DEFAULT_SVG_HEIGHT_MULTIPLIER,
-  DEFAULT_SVG_WIDTH_MULTIPLIER,
-} from '../utils/default.constants'
-import { State } from './state'
-import { Block } from './block'
-import { UUID } from './interfaces/custom-types'
-import { ISavedBlock } from './interfaces/saved-block.interface'
-import { ISavedBlockSocket } from './interfaces/saved-block-socket.interface'
-import { ISavedLink } from './interfaces/saved-link.interface'
-import { ISavedLinkSocket } from './interfaces/saved-link-socket.interface'
+import { IState } from '../interfaces/state.interface'
+import { IGrid } from '../interfaces/grid.interface'
+import { ITheme } from '../interfaces/theme.interface'
+import { Theme } from '../models/theme'
+import { IStateService } from '../interfaces/state.service.interface'
+import { IBlock } from '../interfaces/block.interface'
+import { IBlockSocket } from '../interfaces/block-socket.interface'
+import { ILinkSocket } from '../interfaces/link-socket.interface'
+import { ILink } from '../interfaces/link.interface'
+import { UUID } from '../../utils/custom-types'
+import { IBehaviorSubject } from '../interfaces/behavior-subject.interface'
+import { BehaviorSubject } from '../../utils/behavior-subject'
+import { ISavedBlockSocket } from '../interfaces/saved-block-socket.interface'
+import { ISavedLink } from '../interfaces/saved-link.interface'
+import { DEFAULT_MAP } from '../../utils/default.constants'
+import { WorkArea } from '../models/work-area'
+import { ISvgConfig } from '../interfaces/svg-config.interface'
+import { Helper } from '../../utils/helper'
+import { ISavedState } from '../interfaces/saved-state.interface'
+import { ISavedBlock } from '../interfaces/saved-block.interface'
+import { ISavedLinkSocket } from '../interfaces/saved-link-socket.interface'
+import { ISubscription } from '../interfaces/subscription.interface'
 
-export class FloBro implements IFloBro {
-  constructor(container: HTMLElement, grid?: IGrid, theme?: ITheme) {
-    if (container.style.display === 'inline') {
-      console.warn(
-        'FloBro may not display correctly. An inline container element is not ideal.'
-      )
-    }
-
-    this._state = new State(container, grid, theme)
-
-    console.log('FloBro Initialized!')
-  }
-
-  private _state: IState
+export class StateService implements IStateService {
+  private _state: IBehaviorSubject<IState> = new BehaviorSubject<IState>({
+    id: Helper.GenerateUUID(),
+    workArea: new WorkArea(
+      {} as HTMLElement,
+      {} as SVGSVGElement,
+      {} as ISvgConfig,
+      {} as IGrid
+    ),
+    theme: new Theme(),
+    blocks: new Map<UUID, IBlock<unknown>>(),
+    blockSockets: new Map<UUID, IBlockSocket<unknown>>(),
+    linkSockets: new Map<UUID, ILinkSocket<unknown>>(),
+    links: new Map<UUID, ILink<unknown>>(),
+  })
 
   public get state(): IState {
-    return this._state
+    return this._state.getValue()
   }
 
   private static mapBlock<T>(block: IBlock<T>): ISavedBlock {
@@ -135,76 +133,158 @@ export class FloBro implements IFloBro {
     }
   }
 
-  public render(): void {
-    const container = this.state.container
-    const svg = document.createElement('svg')
+  public initialize(
+    container: HTMLElement,
+    svg: SVGSVGElement,
+    svgConfig?: ISvgConfig,
+    grid?: IGrid,
+    theme: ITheme = new Theme()
+  ): IState {
+    const workArea = new WorkArea(container, svg, svgConfig, grid)
 
-    if (!container) {
+    return this.updateState({
+      workArea,
+      theme,
+    })
+  }
+
+  public updateGrid(options: Partial<IGrid>): void {
+    const workArea = this.state.workArea
+
+    this.updateState({
+      workArea: {
+        ...workArea,
+        grid: {
+          ...workArea.grid,
+          ...options,
+        } as IGrid,
+      },
+    })
+  }
+
+  public updateTheme(options: Partial<ITheme>): void {
+    this.updateState({
+      theme: {
+        ...this.state.theme,
+        ...options,
+      },
+    })
+  }
+
+  public addBlock<T>(block: IBlock<T>): void {
+    if (!block.id) {
       throw new Error(
-        'No container element has been set for Flobro. Please set a valid HTML element when constructing Flobro'
+        `No ID found on block object. Please use the factory to create a block first`
       )
     }
 
-    const viewportWidth = container.clientWidth
-    const viewportHeight = container.clientHeight
-    const totalWidth = viewportWidth * DEFAULT_SVG_WIDTH_MULTIPLIER
-    const totalHeight = viewportHeight * DEFAULT_SVG_HEIGHT_MULTIPLIER
-    const initialX = viewportWidth - viewportWidth / 2
-    const initialY = viewportHeight - viewportHeight / 2
+    this.state.blocks.set(block.id, block)
 
-    svg.setAttribute('class', DEFAULT_SVG_CLASS)
-    svg.setAttribute('width', `${viewportWidth}`)
-    svg.setAttribute('height', `${viewportHeight}`)
-    svg.setAttribute(
-      'viewBox',
-      `${initialX} ${initialY} ${totalWidth} ${totalHeight}`
-    )
-
-    container.appendChild(svg)
+    this.updateState({
+      blocks: this.state.blocks,
+    })
   }
 
-  public changeTheme(theme: Partial<ITheme>): void {
-    this.state.updateTheme(theme)
+  public addBlockSocket<T>(socket: IBlockSocket<T>): void {
+    if (!socket.id) {
+      throw new Error(
+        `No ID found on block object. Please use the factory to create a block first`
+      )
+    }
+
+    this.state.blockSockets.set(socket.id, socket)
+
+    this.updateState({
+      blockSockets: this.state.blockSockets,
+    })
   }
 
-  public addBlock<T>(options: IBlockOptions<T>): Block<T> {
-    const block = BlockFactory.Create(options)
+  public addLinkSocket<T>(socket: ILinkSocket<T>): void {
+    if (!socket.id) {
+      throw new Error(
+        `No ID found on block object. Please use the factory to create a block first`
+      )
+    }
 
-    this.state.addBlock(block)
+    this.state.linkSockets.set(socket.id, socket)
 
-    return block
+    this.updateState({
+      linkSockets: this.state.linkSockets,
+    })
+  }
+
+  public addLink<T>(link: ILink<T>): void {
+    if (!link.id) {
+      throw new Error(
+        `No ID found on block object. Please use the factory to create a block first`
+      )
+    }
+
+    this.state.links.set(link.id, link)
+
+    this.updateState({
+      links: this.state.links,
+    })
   }
 
   public deleteBlock(id: UUID): void {
-    this.state.deleteBlock(id)
+    if (this.state.blocks.has(id)) {
+      this.state.blocks.delete(id)
+
+      this.updateState({
+        blocks: this.state.blocks,
+      })
+    }
   }
 
-  public clear(): void {
-    this._state = new State(
-      this.state.container,
-      this.state.grid,
-      this.state.theme
-    )
+  public deleteBlockSocket(id: UUID): void {
+    if (this.state.blocks.has(id)) {
+      this.state.blockSockets.delete(id)
 
-    this.render()
+      this.updateState({
+        blockSockets: this.state.blockSockets,
+      })
+    }
+  }
+
+  public deleteLinkBlock(id: UUID): void {
+    if (this.state.blocks.has(id)) {
+      this.state.linkSockets.delete(id)
+
+      this.updateState({
+        linkSockets: this.state.linkSockets,
+      })
+    }
+  }
+
+  public deleteLink(id: UUID): void {
+    if (this.state.blocks.has(id)) {
+      this.state.links.delete(id)
+
+      this.updateState({
+        blocks: this.state.blocks,
+      })
+    }
   }
 
   public save(): ISavedState {
     const blocks = Array.from(this.state.blocks.values()).map(
-      (block: IBlock<unknown>) => FloBro.mapBlock(block)
+      (block: IBlock<unknown>) => StateService.mapBlock(block)
     )
     const blockSockets = Array.from(this.state.blockSockets.values()).map(
-      (blockSocket: IBlockSocket<unknown>) => FloBro.mapBlockSocket(blockSocket)
+      (blockSocket: IBlockSocket<unknown>) =>
+        StateService.mapBlockSocket(blockSocket)
     )
     const linkSockets = Array.from(this.state.linkSockets.values()).map(
-      (linkSocket: ILinkSocket<unknown>) => FloBro.mapLinkSocket(linkSocket)
+      (linkSocket: ILinkSocket<unknown>) =>
+        StateService.mapLinkSocket(linkSocket)
     )
     const links = Array.from(this.state.links.values()).map(
-      (link: ILink<unknown>) => FloBro.mapLink(link)
+      (link: ILink<unknown>) => StateService.mapLink(link)
     )
 
     return {
-      grid: this.state.grid,
+      workArea: this.state.workArea,
       theme: this.state.theme,
       blocks,
       blockSockets,
@@ -286,8 +366,12 @@ export class FloBro implements IFloBro {
         )
       }
 
-      this.state.addBlock(block)
+      this.addBlock(block)
     })
+  }
+
+  public onUpdate(callback: (state: IState) => void): ISubscription {
+    return this._state.subscribe(callback)
   }
 
   private reduceBlockSocket(
@@ -308,7 +392,7 @@ export class FloBro implements IFloBro {
     }
 
     blockSocket.updateParent(block)
-    this.state.addBlockSocket(blockSocket)
+    this.addBlockSocket(blockSocket)
 
     if (sbs.linkIds?.length) {
       blockSocket.links = sbs.linkIds?.reduce(
@@ -326,7 +410,7 @@ export class FloBro implements IFloBro {
     linksMap: Map<UUID, ILink<unknown>>,
     linkId: UUID,
     savedLinks: Map<UUID, ISavedLink>
-  ) {
+  ): Map<UUID, ILink<unknown>> {
     const link = this.state.links.get(linkId)
     const sl = savedLinks.get(linkId)
 
@@ -349,7 +433,7 @@ export class FloBro implements IFloBro {
 
     link.updateTarget(targetSocket)
     link.updateOrigin(originSocket)
-    this.state.addLink(link)
+    this.addLink(link)
 
     if (sl.linkSocketIds?.length) {
       link.linkSockets = sl.linkSocketIds.reduce(
@@ -370,7 +454,7 @@ export class FloBro implements IFloBro {
     linkSocketsMap: Map<UUID, ILinkSocket<unknown>>,
     linkSocketId: UUID,
     link: ILink<unknown>
-  ) {
+  ): Map<UUID, ILinkSocket<unknown>> {
     const linkSocket = this.state.linkSockets.get(linkSocketId)
 
     if (!linkSocket) {
@@ -378,8 +462,17 @@ export class FloBro implements IFloBro {
     }
 
     linkSocket.updateParent(link)
-    this.state.addLinkSocket(linkSocket)
+    this.addLinkSocket(linkSocket)
 
     return linkSocketsMap.set(linkSocketId, linkSocket)
+  }
+
+  private updateState(state: Partial<IState> | null): IState {
+    this._state.next({
+      ...this.state,
+      ...state,
+    } as IState)
+
+    return this.state
   }
 }

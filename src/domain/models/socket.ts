@@ -2,21 +2,30 @@ import {
   DEFAULT_LINK_CAN_EDIT,
   DEFAULT_SOCKET_CAN_DELETE,
   DEFAULT_SOCKET_CAN_VIEW,
-  DEFAULT_SOCKET_DATA,
-  DEFAULT_SOCKET_STYLE,
-} from '../utils/default.constants'
-import { ICircleStyle } from './interfaces/circle-style.interface'
-import { ISocket } from './interfaces/socket.interface'
-import { UUID } from './interfaces/custom-types'
-import { ISocketOptions } from './interfaces/socket-options.interface'
+} from '../../utils/default.constants'
+import { ICircleStyle } from '../interfaces/circle-style.interface'
+import { ISocket } from '../interfaces/socket.interface'
+import { UUID } from '../../utils/custom-types'
+import { ISocketOptions } from '../interfaces/socket-options.interface'
+import { FlobroConfig } from '../../config/flobro.config'
+import { Fill } from './fill'
+import { Stroke } from './stroke'
+import { CircleStyle } from './circle-style'
 
 export class Socket<T> implements ISocket<T> {
   public id?: UUID
-  public style: ICircleStyle = DEFAULT_SOCKET_STYLE
+  public style: ICircleStyle = new CircleStyle(
+    FlobroConfig.defaults.DefaultSocketRadius,
+    new Fill(FlobroConfig.defaults.DefaultBlockFillColor),
+    new Stroke(
+      FlobroConfig.defaults.DefaultBlockStrokeColor,
+      FlobroConfig.defaults.DefaultBlockStrokeWidth
+    )
+  )
   public canDelete: boolean = DEFAULT_SOCKET_CAN_DELETE
   public canEdit: boolean = DEFAULT_LINK_CAN_EDIT
   public canView: boolean = DEFAULT_SOCKET_CAN_VIEW
-  public data: T | null = DEFAULT_SOCKET_DATA
+  public data: T | null = null
 
   constructor(options: ISocketOptions<T>) {
     this.id = options.id

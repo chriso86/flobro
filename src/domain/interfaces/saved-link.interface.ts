@@ -1,5 +1,5 @@
 import { ISavedEntity } from './saved-entity.interface'
-import { UUID } from './custom-types'
+import { UUID } from '../../utils/custom-types'
 
 export interface ISavedLink extends ISavedEntity {
   startX: number

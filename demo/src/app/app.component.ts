@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core'
-import { FloBro } from 'flobro'
+import { Flobro } from '../../../src'
 
 @Component({
   selector: 'app-root',
@@ -7,11 +7,11 @@ import { FloBro } from 'flobro'
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit {
-  public flobro?: FloBro
+  public flobro?: Flobro
 
   @ViewChild('container') container!: ElementRef
 
   public ngAfterViewInit(): void {
-    this.flobro = new FloBro(this.container.nativeElement)
+    this.flobro = new Flobro(this.container.nativeElement)
   }
 }

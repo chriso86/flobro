@@ -72,10 +72,12 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "demo:build:production"
+              "browserTarget": "demo:build:production",
+              "port": 8885
             },
             "development": {
-              "browserTarget": "demo:build:development"
+              "browserTarget": "demo:build:development",
+              "port": 8885
             }
           },
           "defaultConfiguration": "development"

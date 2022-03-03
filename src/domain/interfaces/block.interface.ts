@@ -3,7 +3,7 @@ import { IBlockStyle } from './block-style.interface'
 import { IBlockSocketOptions } from './block-socket-options.interface'
 import { IBlockSocket } from './block-socket.interface'
 import { ICoordinates } from './coordinates.interface'
-import { HTML, UUID } from './custom-types'
+import { HTML, UUID } from '../../utils/custom-types'
 
 export interface IBlock<T> extends IElement<T> {
   title: string

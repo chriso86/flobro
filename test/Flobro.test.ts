@@ -1,4 +1,4 @@
-import { FloBro } from '../src'
+import { Flobro } from '../src'
 import {
   DEFAULT_BLOCK_FILL_COLOR,
   DEFAULT_BLOCK_HEIGHT,
@@ -12,12 +12,10 @@ import {
   DEFAULT_SOCKET_STROKE_COLOR,
   DEFAULT_SOCKET_STROKE_WIDTH,
 } from '../src/utils/default.constants'
-import { CircleStyle } from '../src/domain/circle-style'
-import { BlockStyle } from '../src/domain/block-style'
-import { IFill } from '../src/domain/interfaces/fill.interface'
-import { IStroke } from '../src/domain/interfaces/stroke.interface'
-import { Style } from '../src/domain/style'
-import { UUID } from '../src/domain/interfaces/custom-types'
+import { CircleStyle } from '../src/domain/models/circle-style'
+import { BlockStyle } from '../src/domain/models/block-style'
+import { Style } from '../src/domain/models/style'
+import { UUID } from '../src/utils/custom-types'
 import { ILink } from '../src/domain/interfaces/link.interface'
 import { IBlock } from '../src/domain/interfaces/block.interface'
 import { ILinkSocket } from '../src/domain/interfaces/link-socket.interface'
@@ -43,16 +41,29 @@ const GenerateUUID = () => {
   )}-${GenerateUUIDSection(4)}-${GenerateUUIDSection(15)}`
 }
 
+beforeAll(() => {
+  //@ts-ignore
+  ;(global as any).crypto = {
+    getRandomValues<T>(array: T): T {
+      return array
+    },
+    subtle: undefined,
+    randomBytes: (num: number[]) => {
+      return num
+    },
+  }
+})
+
 test('Construct Flobro', () => {
   const container = document.createElement('div')
-  const flobro = new FloBro(container)
+  const flobro = new Flobro(container)
 
   expect(flobro).toBeDefined()
 })
 
 test('Theme should be set', () => {
   const container = document.createElement('div')
-  const flobro = new FloBro(container)
+  const flobro = new Flobro(container)
 
   // Block theme style is set
   expect(flobro.state.theme.blockStyle.stroke.width).toEqual(
@@ -88,42 +99,9 @@ test('Theme should be set', () => {
   )
 })
 
-test('Theme should change to new settings', () => {
-  const container = document.createElement('div')
-  const flobro = new FloBro(container)
-  const newFill: IFill = { color: '#f00' }
-  const newStroke: IStroke = { color: '#f00', width: 5000 }
-  const blockStyle = new BlockStyle(5000, 6000, newFill, newStroke)
-  const socketStyle = new CircleStyle(5000, newFill, newStroke)
-  const linkStyle = new Style(newFill, newStroke)
-
-  flobro.changeTheme({
-    blockStyle,
-    socketStyle,
-    linkStyle,
-  })
-
-  // Block theme style is set
-  expect(flobro.state.theme.blockStyle.stroke.width).toEqual(newStroke.width)
-  expect(flobro.state.theme.blockStyle.stroke.color).toEqual(newStroke.color)
-  expect(flobro.state.theme.blockStyle.fill.color).toEqual(newFill.color)
-  expect(flobro.state.theme.blockStyle.width).toEqual(blockStyle.width)
-  expect(flobro.state.theme.blockStyle.height).toEqual(blockStyle.height)
-
-  // Socket theme style is set
-  expect(flobro.state.theme.socketStyle.stroke.width).toEqual(newStroke.width)
-  expect(flobro.state.theme.socketStyle.stroke.color).toEqual(newStroke.color)
-  expect(flobro.state.theme.socketStyle.fill.color).toEqual(newFill.color)
-  expect(flobro.state.theme.socketStyle.radius).toEqual(socketStyle.radius)
-
-  // Link theme style is set
-  expect(flobro.state.theme.linkStyle.stroke.width).toEqual(newStroke.width)
-  expect(flobro.state.theme.linkStyle.stroke.color).toEqual(newStroke.color)
-})
-
 test('Create two blocks with two sockets (each side), and connect them', () => {
   const container = document.createElement('div')
-  const flobro = new FloBro(container)
+  const flobro = new Flobro(container)
   const numBlocks = 2
   const numInSidesPerBlock = 1
   const numOutSidesPerBlock = 1
@@ -249,7 +227,7 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       expect(socket.canDelete).toEqual(false)
       expect(socket.canEdit).toEqual(false)
 
-      expect(block.inSockets.get(socketId)).toEqual(socket)
+      expect(block.outSockets.get(socketId)).toEqual(socket)
     }
   }
 

@@ -4,7 +4,8 @@
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true
   },
   "include": ["src/**/*"]
 }

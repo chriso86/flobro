@@ -1,14 +1,16 @@
-import { Block } from '../domain/block'
+import { Block } from '../domain/models/block'
 import {
   DEFAULT_BLOCK_CAN_DELETE,
   DEFAULT_BLOCK_CAN_EDIT,
   DEFAULT_BLOCK_CAN_VIEW,
-  DEFAULT_BLOCK_DATA,
-  DEFAULT_BLOCK_STYLE,
 } from '../utils/default.constants'
 import { Helper } from '../utils/helper'
 import { IBlockOptions } from '../domain/interfaces/block-options.interface'
-import { Key } from '../domain/interfaces/custom-types'
+import { Key } from '../utils/custom-types'
+import { BlockStyle } from '../domain/models/block-style'
+import { FlobroConfig } from '../config/flobro.config'
+import { Fill } from '../domain/models/fill'
+import { Stroke } from '../domain/models/stroke'
 
 export class BlockFactory {
   private static _definitions: Map<Key, IBlockOptions<unknown>> = new Map<
@@ -37,11 +39,21 @@ export class BlockFactory {
       title: options.title,
       content: options.content,
       position: options.position,
-      style: options.style ?? DEFAULT_BLOCK_STYLE,
+      style:
+        options.style ??
+        new BlockStyle(
+          FlobroConfig.defaults.DefaultBlockWidth,
+          FlobroConfig.defaults.DefaultBlockHeight,
+          new Fill(FlobroConfig.defaults.DefaultBlockFillColor),
+          new Stroke(
+            FlobroConfig.defaults.DefaultBlockStrokeColor,
+            FlobroConfig.defaults.DefaultBlockStrokeWidth
+          )
+        ),
       canDelete: options.canDelete ?? DEFAULT_BLOCK_CAN_DELETE,
       canEdit: options.canEdit ?? DEFAULT_BLOCK_CAN_EDIT,
       canView: options.canView ?? DEFAULT_BLOCK_CAN_VIEW,
-      data: options.data ?? DEFAULT_BLOCK_DATA,
+      data: options.data,
     })
   }
 

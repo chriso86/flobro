@@ -1,5 +1,5 @@
 import { IStyle } from './style.interface'
-import { UUID } from './custom-types'
+import { UUID } from '../../utils/custom-types'
 
 export interface IElementOptions<T> {
   id?: UUID

@@ -1,4 +1,4 @@
-import { Decimal } from './custom-types'
+import { Decimal } from '../../utils/custom-types'
 
 export interface ICoordinates {
   x: Decimal

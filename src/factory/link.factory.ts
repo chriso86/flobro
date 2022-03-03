@@ -1,13 +1,15 @@
-import { Link } from '../domain/link'
+import { Link } from '../domain/models/link'
 import {
   DEFAULT_LINK_CAN_DELETE,
   DEFAULT_LINK_CAN_EDIT,
   DEFAULT_LINK_CAN_VIEW,
-  DEFAULT_LINK_DATA,
-  DEFAULT_LINK_STYLE,
 } from '../utils/default.constants'
 import { Helper } from '../utils/helper'
 import { ILinkOptions } from '../domain/interfaces/link-options.interface'
+import { FlobroConfig } from '../config/flobro.config'
+import { Fill } from '../domain/models/fill'
+import { Stroke } from '../domain/models/stroke'
+import { Style } from '../domain/models/style'
 
 export class LinkFactory {
   protected constructor() {
@@ -25,11 +27,19 @@ export class LinkFactory {
       endCurveY: options.endCurveY,
       endX: options.endX,
       endY: options.endY,
-      style: options.style ?? DEFAULT_LINK_STYLE,
+      style:
+        options.style ??
+        new Style(
+          new Fill(FlobroConfig.defaults.DefaultBlockFillColor),
+          new Stroke(
+            FlobroConfig.defaults.DefaultBlockStrokeColor,
+            FlobroConfig.defaults.DefaultBlockStrokeWidth
+          )
+        ),
       canDelete: options.canDelete ?? DEFAULT_LINK_CAN_DELETE,
       canEdit: options.canEdit ?? DEFAULT_LINK_CAN_EDIT,
       canView: options.canView ?? DEFAULT_LINK_CAN_VIEW,
-      data: options.data ?? DEFAULT_LINK_DATA,
+      data: options.data ?? null,
     })
   }
 }
