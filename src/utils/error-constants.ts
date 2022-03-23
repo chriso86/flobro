@@ -2,7 +2,7 @@ export const NotImplementedException = (): Error => {
   throw new Error('This functionality is currently not implemented.')
 }
 
-export const SVGUndefinedException = (): Error => {
+export const SvgUndefinedException = (): Error => {
   throw new Error('Critical error. SVG element is undefined.')
 }
 
@@ -10,7 +10,7 @@ export const ScreenCTMUndefinedException = (): Error => {
   throw new Error('Critical error. Screen CTM is undefined.')
 }
 
-export const SVGPointUndefinedException = (): Error => {
+export const SvgPointUndefinedException = (): Error => {
   throw new Error('Critical error. SVG Point is undefined.')
 }
 

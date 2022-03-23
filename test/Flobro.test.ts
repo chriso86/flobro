@@ -1,26 +1,19 @@
 import { Flobro } from '../src'
+import { UUID } from '../src/domain/interfaces/custom-types'
+import { Link } from '../src/domain/models/builder/link'
+import { Block } from '../src/domain/models/builder/block'
+import { LinkSocket } from '../src/domain/models/builder/link.socket'
 import {
-  DEFAULT_BLOCK_FILL_COLOR,
-  DEFAULT_BLOCK_HEIGHT,
-  DEFAULT_BLOCK_STROKE_COLOR,
-  DEFAULT_BLOCK_STROKE_WIDTH,
-  DEFAULT_BLOCK_WIDTH,
-  DEFAULT_LINK_STROKE_COLOR,
-  DEFAULT_LINK_STROKE_WIDTH,
-  DEFAULT_SOCKET_FILL_COLOR,
-  DEFAULT_SOCKET_RADIUS,
-  DEFAULT_SOCKET_STROKE_COLOR,
-  DEFAULT_SOCKET_STROKE_WIDTH,
+  DEFAULT_BLOCK_CAN_DELETE,
+  DEFAULT_BLOCK_CAN_EDIT,
+  DEFAULT_BLOCK_CAN_VIEW,
+  DEFAULT_LINK_CAN_DELETE,
+  DEFAULT_LINK_CAN_EDIT,
+  DEFAULT_LINK_CAN_VIEW,
+  DEFAULT_SOCKET_CAN_DELETE,
+  DEFAULT_SOCKET_CAN_EDIT,
+  DEFAULT_SOCKET_CAN_VIEW,
 } from '../src/utils/default.constants'
-import { CircleStyle } from '../src/domain/models/circle-style'
-import { BlockStyle } from '../src/domain/models/block-style'
-import { Style } from '../src/domain/models/style'
-import { UUID } from '../src/utils/custom-types'
-import { ILink } from '../src/domain/interfaces/link.interface'
-import { IBlock } from '../src/domain/interfaces/block.interface'
-import { ILinkSocket } from '../src/domain/interfaces/link-socket.interface'
-
-// Current coverage - 62.81% (2022-02-15) - TODO: INCREASE COVERAGE AND UPDATE THIS
 
 const GenerateUUIDSection = (length: number) => {
   let result = ''
@@ -61,44 +54,6 @@ test('Construct Flobro', () => {
   expect(flobro).toBeDefined()
 })
 
-test('Theme should be set', () => {
-  const container = document.createElement('div')
-  const flobro = new Flobro(container)
-
-  // Block theme style is set
-  expect(flobro.state.theme.blockStyle.stroke.width).toEqual(
-    DEFAULT_BLOCK_STROKE_WIDTH
-  )
-  expect(flobro.state.theme.blockStyle.stroke.color).toEqual(
-    DEFAULT_BLOCK_STROKE_COLOR
-  )
-  expect(flobro.state.theme.blockStyle.fill.color).toEqual(
-    DEFAULT_BLOCK_FILL_COLOR
-  )
-  expect(flobro.state.theme.blockStyle.width).toEqual(DEFAULT_BLOCK_WIDTH)
-  expect(flobro.state.theme.blockStyle.height).toEqual(DEFAULT_BLOCK_HEIGHT)
-
-  // Socket theme style is set
-  expect(flobro.state.theme.socketStyle.stroke.width).toEqual(
-    DEFAULT_SOCKET_STROKE_WIDTH
-  )
-  expect(flobro.state.theme.socketStyle.stroke.color).toEqual(
-    DEFAULT_SOCKET_STROKE_COLOR
-  )
-  expect(flobro.state.theme.socketStyle.fill.color).toEqual(
-    DEFAULT_SOCKET_FILL_COLOR
-  )
-  expect(flobro.state.theme.socketStyle.radius).toEqual(DEFAULT_SOCKET_RADIUS)
-
-  // Link theme style is set
-  expect(flobro.state.theme.linkStyle.stroke.width).toEqual(
-    DEFAULT_LINK_STROKE_WIDTH
-  )
-  expect(flobro.state.theme.linkStyle.stroke.color).toEqual(
-    DEFAULT_LINK_STROKE_COLOR
-  )
-})
-
 test('Create two blocks with two sockets (each side), and connect them', () => {
   const container = document.createElement('div')
   const flobro = new Flobro(container)
@@ -125,22 +80,12 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       x: 10,
       y: 10,
     }
-    const style = new BlockStyle(
-      6000,
-      7000,
-      { color: '#f00' },
-      { color: '#f00', width: 5000 }
-    )
     const block = flobro.addBlock({
       id,
       title,
       content,
-      data,
       position,
-      canEdit: false,
-      canView: false,
-      canDelete: false,
-      style,
+      data,
     })
 
     // Test block properties and existence on state
@@ -149,10 +94,9 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
     expect(block.content).toEqual(content)
     expect(block.data).toEqual(data)
     expect(block.position).toEqual(position)
-    expect(block.canEdit).toEqual(false)
-    expect(block.canView).toEqual(false)
-    expect(block.canDelete).toEqual(false)
-    expect(block.style).toEqual(style)
+    expect(block.canEdit).toEqual(DEFAULT_BLOCK_CAN_EDIT)
+    expect(block.canView).toEqual(DEFAULT_BLOCK_CAN_VIEW)
+    expect(block.canDelete).toEqual(DEFAULT_BLOCK_CAN_DELETE)
 
     expect(flobro.state.blocks.get(id)!.id).toEqual(block.id)
 
@@ -165,30 +109,20 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
           test: 12,
         },
       }
-      const socketStyle = new CircleStyle(
-        5000,
-        { color: '#f00' },
-        { color: '#f00', width: 5000 }
-      )
       const socket = block.addSocket({
         id: socketId,
         side: 'in',
         data: socketData,
-        style: socketStyle,
-        canView: false,
-        canDelete: false,
-        canEdit: false,
       })
 
       // Test socket (input)
       expect(socket.id).toEqual(socketId)
       expect(socket.side).toEqual('in')
       expect(socket.data).toEqual(socketData)
-      expect(socket.style).toEqual(socketStyle)
-      expect(socket.links).toEqual(new Map<UUID, ILink<unknown>>())
-      expect(socket.canView).toEqual(false)
-      expect(socket.canDelete).toEqual(false)
-      expect(socket.canEdit).toEqual(false)
+      expect(socket.links).toEqual(new Map<UUID, Link<unknown>>())
+      expect(socket.canView).toEqual(DEFAULT_SOCKET_CAN_VIEW)
+      expect(socket.canDelete).toEqual(DEFAULT_SOCKET_CAN_DELETE)
+      expect(socket.canEdit).toEqual(DEFAULT_SOCKET_CAN_EDIT)
 
       expect(block.inSockets.get(socketId)).toEqual(socket)
     }
@@ -202,30 +136,20 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
           test: 12,
         },
       }
-      const socketStyle = new CircleStyle(
-        5000,
-        { color: '#f00' },
-        { color: '#f00', width: 5000 }
-      )
       const socket = block.addSocket({
         id: socketId,
         side: 'out',
         data: socketData,
-        style: socketStyle,
-        canView: false,
-        canDelete: false,
-        canEdit: false,
       })
 
       // Test socket (output)
       expect(socket.id).toEqual(socketId)
       expect(socket.side).toEqual('out')
       expect(socket.data).toEqual(socketData)
-      expect(socket.style).toEqual(socketStyle)
-      expect(socket.links).toEqual(new Map<UUID, ILink<unknown>>())
-      expect(socket.canView).toEqual(false)
-      expect(socket.canDelete).toEqual(false)
-      expect(socket.canEdit).toEqual(false)
+      expect(socket.links).toEqual(new Map<UUID, Link<unknown>>())
+      expect(socket.canView).toEqual(DEFAULT_SOCKET_CAN_VIEW)
+      expect(socket.canDelete).toEqual(DEFAULT_SOCKET_CAN_DELETE)
+      expect(socket.canEdit).toEqual(DEFAULT_SOCKET_CAN_EDIT)
 
       expect(block.outSockets.get(socketId)).toEqual(socket)
     }
@@ -239,32 +163,29 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       currentBlockOutputId: string | null
       nextBlockInputId: string | null
     }[] = blocks
-      .map(
-        (block: IBlock<unknown>, index: number, array: IBlock<unknown>[]) => {
-          const processThisBlock = index + 1 < array.length
+      .map((block: Block<unknown>, index: number, array: Block<unknown>[]) => {
+        const processThisBlock = index + 1 < array.length
 
-          if (processThisBlock) {
-            const nextBlock = array[index + 1]
-            const outKeys = Array.from(block.outSockets.keys())
-            const inKeys = Array.from(nextBlock.inSockets.keys())
-
-            return {
-              currentBlockId: block.id ?? null,
-              nextBlockId: nextBlock.id ?? null,
-              currentBlockOutputId:
-                block.outSockets.get(outKeys[0])?.id ?? null,
-              nextBlockInputId: nextBlock.inSockets.get(inKeys[0])?.id ?? null,
-            }
-          }
+        if (processThisBlock) {
+          const nextBlock = array[index + 1]
+          const outKeys = Array.from(block.outSockets.keys())
+          const inKeys = Array.from(nextBlock.inSockets.keys())
 
           return {
-            currentBlockId: null,
-            nextBlockId: null,
-            currentBlockOutputId: null,
-            nextBlockInputId: null,
+            currentBlockId: block.id ?? null,
+            nextBlockId: nextBlock.id ?? null,
+            currentBlockOutputId: block.outSockets.get(outKeys[0])?.id ?? null,
+            nextBlockInputId: nextBlock.inSockets.get(inKeys[0])?.id ?? null,
           }
         }
-      )
+
+        return {
+          currentBlockId: null,
+          nextBlockId: null,
+          currentBlockOutputId: null,
+          nextBlockInputId: null,
+        }
+      })
       .filter((c) => !!c.nextBlockInputId && !!c.currentBlockOutputId)
 
     console.log(connectorMap)
@@ -296,10 +217,6 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       const linkData = {
         link: true,
       }
-      const linkStyle = new Style(
-        { color: '#f00' },
-        { color: '#f00', width: 5000 }
-      )
       const startX = 1
       const startY = 2
       const startCurveX = 10
@@ -308,22 +225,21 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       const endCurveY = 40
       const endX = 3
       const endY = 4
-      const link = originSocket.addLink({
-        id: linkId,
-        data: linkData,
-        style: linkStyle,
-        startX,
-        startY,
-        startCurveX,
-        startCurveY,
-        endCurveX,
-        endCurveY,
-        endX,
-        endY,
-        canView: false,
-        canDelete: false,
-        canEdit: false,
-      })
+      const link = originSocket.addLink(
+        {
+          id: linkId,
+          data: linkData,
+          startX,
+          startY,
+          startCurveX,
+          startCurveY,
+          endCurveX,
+          endCurveY,
+          endX,
+          endY,
+        },
+        'origin'
+      )
 
       link.updateOrigin(originSocket)
       link.updateTarget(targetSocket)
@@ -339,7 +255,6 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       // Test link
       expect(link.id).toEqual(linkId)
       expect(link.data).toEqual(linkData)
-      expect(link.style).toEqual(linkStyle)
       expect(link.startX).toEqual(startX)
       expect(link.startY).toEqual(startY)
       expect(link.startCurveX).toEqual(startCurveX)
@@ -348,12 +263,12 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       expect(link.endCurveY).toEqual(endCurveY)
       expect(link.endX).toEqual(endX)
       expect(link.endY).toEqual(endY)
-      expect(link.linkSockets).toEqual(new Map<UUID, ILinkSocket<unknown>>())
+      expect(link.linkSockets).toEqual(new Map<UUID, LinkSocket<unknown>>())
       expect(link.origin.id).toEqual(originSocket.id)
       expect(link.target.id).toEqual(targetSocket.id)
-      expect(link.canView).toEqual(false)
-      expect(link.canDelete).toEqual(false)
-      expect(link.canEdit).toEqual(false)
+      expect(link.canView).toEqual(DEFAULT_LINK_CAN_VIEW)
+      expect(link.canDelete).toEqual(DEFAULT_LINK_CAN_DELETE)
+      expect(link.canEdit).toEqual(DEFAULT_LINK_CAN_EDIT)
 
       expect(originSocket.links.get(linkId)).toEqual(link)
     })

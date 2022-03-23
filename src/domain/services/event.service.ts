@@ -1,17 +1,15 @@
-import { IEventService } from '../interfaces/event.service.interface'
 import { FlobroEvent } from '../../enums/flobro-event.enum'
-import { ISubscription } from '../interfaces/subscription.interface'
-import { IBehaviorSubject } from '../interfaces/behavior-subject.interface'
-import { BehaviorSubject } from '../../utils/behavior-subject'
+import { BehaviorSubject } from '../models/event/behavior-subject'
+import { Subscription } from '../models/event/subscription'
 
-export class EventService implements IEventService {
-  private _eventBehaviorSubjects: Map<FlobroEvent, IBehaviorSubject<unknown>>
-  private _subscriptions: ISubscription[]
+export class EventService {
+  private _eventBehaviorSubjects: Map<FlobroEvent, BehaviorSubject<unknown>>
+  private _subscriptions: Subscription<unknown>[]
 
   constructor() {
     this._eventBehaviorSubjects = new Map<
       FlobroEvent,
-      IBehaviorSubject<unknown>
+      BehaviorSubject<unknown>
     >()
     this._subscriptions = []
   }
@@ -33,17 +31,15 @@ export class EventService implements IEventService {
   public on(
     event: FlobroEvent,
     callback: (value: unknown) => void
-  ): ISubscription {
+  ): Subscription<unknown> {
     return this.getEventBehaviorSubject(event).subscribe(callback)
   }
 
   public purge(): void {
-    this._subscriptions.forEach((s: ISubscription) => s.unsubscribe())
+    this._subscriptions.forEach((s: Subscription<unknown>) => s.unsubscribe())
   }
 
-  public getEventBehaviorSubject(
-    event: FlobroEvent
-  ): IBehaviorSubject<unknown> {
+  public getEventBehaviorSubject(event: FlobroEvent): BehaviorSubject<unknown> {
     this.ensureBehaviorSubjectExists(event)
 
     const eventBehaviorSubject = this._eventBehaviorSubjects.get(event)

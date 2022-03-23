@@ -1,8 +1,4 @@
-import { UUID } from './custom-types'
-import { ISvgConfig } from '../domain/interfaces/svg-config.interface'
-
-/*  Internal Defaults */
-export const DEFAULT_MAP = <T>(): Map<UUID, T> => new Map<UUID, T>()
+import Options = SvgPanZoom.Options
 
 /* General Defaults */
 export const DEFAULT_STROKE_WIDTH = 2
@@ -17,7 +13,7 @@ export const DEFAULT_SVG_HEIGHT = 1080
 export const DEFAULT_SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 export const DEFAULT_SVG_ID_SELECTOR = 'flobro-svg-container'
 export const DEFAULT_SVG_CLASS = 'flobro-svg-container'
-export const DEFAULT_SVG_CONFIG: ISvgConfig = {
+export const DEFAULT_SVG_CONFIG: Options = {
   viewportSelector: '',
   panEnabled: true,
   controlIconsEnabled: false,
@@ -32,13 +28,13 @@ export const DEFAULT_SVG_CONFIG: ISvgConfig = {
   contain: false,
   center: true,
   refreshRate: 'auto',
-  beforeZoom: () => null,
+  beforeZoom: () => void 0,
   onZoom: () => null,
-  beforePan: () => null,
+  beforePan: () => void 0,
   onPan: () => null,
   onUpdatedCTM: () => null,
-  customEventsHandler: {},
-  eventsListenerElement: null,
+  customEventsHandler: undefined,
+  eventsListenerElement: undefined,
 }
 export const DEFAULT_SVG_ZOOM_DISPLAY_CLASS = 'flobro-zoom-display'
 

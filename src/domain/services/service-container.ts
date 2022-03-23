@@ -1,7 +1,3 @@
-import {
-  Class,
-  IServiceContainer,
-} from '../interfaces/service-container.interface'
 import { Sealed } from '../decorators/sealed'
 import {
   FailedToInitializeServiceContainer,
@@ -10,9 +6,10 @@ import {
 } from '../../utils/error-constants'
 import { EventService } from './event.service'
 import { StateService } from './state.service'
+import { Class } from '../interfaces/custom-types'
 
 @Sealed
-export class ServiceContainer implements IServiceContainer {
+export class ServiceContainer {
   private static _instance: ServiceContainer
   private _services: { [key: string]: unknown } = {}
 

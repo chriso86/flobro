@@ -17,7 +17,7 @@ The intended features of this library are as follows:
 [![version number](https://img.shields.io/npm/v/example-typescript-package?color=green&label=version)](https://github.com/tomchen/example-typescript-package/releases)
 [![Test & Build](https://github.com/chriso86/flobro/actions/workflows/testbuild.yml/badge.svg)](https://github.com/chriso86/flobro/actions/workflows/testbuild.yml)
 ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/chriso86/flobro)
-[![License](https://img.shields.io/github/license/chriso86/flobro)](https://github.com/chriso86/flobro/blob/main/LICENSE)
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/chriso86/flobro)
 
 I have used Tom Chen's npm package template which has been easy and awesome to use, you can use it by using the link below:
 

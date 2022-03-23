@@ -1,17 +1,15 @@
-import { ITheme } from './theme.interface'
-import { IBlock } from './block.interface'
-import { IBlockSocket } from './block-socket.interface'
-import { ILinkSocket } from './link-socket.interface'
-import { ILink } from './link.interface'
-import { UUID } from '../../utils/custom-types'
-import { IWorkArea } from './work-area.interface'
+import { UUID } from './custom-types'
+import { BlockSocket } from '../models/builder/block.socket'
+import { Link } from '../models/builder/link'
+import { LinkSocket } from '../models/builder/link.socket'
+import { Block } from '../models/builder/block'
+import { WorkArea } from '../models/builder/work-area'
 
 export interface IState {
   id: UUID
-  workArea: IWorkArea
-  theme: ITheme
-  blocks: Map<UUID, IBlock<unknown>>
-  blockSockets: Map<UUID, IBlockSocket<unknown>>
-  linkSockets: Map<UUID, ILinkSocket<unknown>>
-  links: Map<UUID, ILink<unknown>>
+  workArea: WorkArea
+  blocks: Map<UUID, Block<unknown>>
+  blockSockets: Map<UUID, BlockSocket<unknown>>
+  linkSockets: Map<UUID, LinkSocket<unknown>>
+  links: Map<UUID, Link<unknown>>
 }

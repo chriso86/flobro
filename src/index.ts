@@ -1,3 +1,3 @@
-import { Flobro } from './domain/models/flobro'
+import { Flobro } from './domain/models/builder/flobro'
 
 export { Flobro }
