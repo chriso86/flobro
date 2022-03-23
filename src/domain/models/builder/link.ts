@@ -1,6 +1,6 @@
 import { LinkSocket } from './link.socket'
 import { LinkSocketFactory } from '../../../factory/link-socket.factory'
-import { Coordinates, UUID } from '../../interfaces/custom-types'
+import { Vector2d, UUID } from '../../interfaces/custom-types'
 import { BlockSocket } from './block.socket'
 import { LineStyle } from '../theme/line-style'
 import { BaseEntity } from './base.entity'
@@ -8,28 +8,20 @@ import { FlobroConfig } from '../config/flobro.config'
 import { Stroke } from '../theme/stroke'
 
 export class Link<T> extends BaseEntity<T> {
-  public startX: number
-  public startY: number
-  public startCurveX: number
-  public startCurveY: number
-  public endCurveX: number
-  public endCurveY: number
-  public endX: number
-  public endY: number
+  public start: Vector2d
+  public startCurve: Vector2d
+  public endCurve: Vector2d
+  public end: Vector2d
   public style: LineStyle
   public linkSockets: Map<string, LinkSocket<unknown>>
   public origin: BlockSocket<unknown> | null
   public target: BlockSocket<unknown> | null
 
   constructor(
-    startX: number,
-    startY: number,
-    startCurveX: number,
-    startCurveY: number,
-    endCurveX: number,
-    endCurveY: number,
-    endX: number,
-    endY: number,
+    start: Vector2d,
+    startCurve: Vector2d,
+    endCurve: Vector2d,
+    end: Vector2d,
     options: {
       id?: UUID
       data?: T
@@ -48,14 +40,10 @@ export class Link<T> extends BaseEntity<T> {
       canView: settings.canView,
     })
 
-    this.startX = startX
-    this.startY = startY
-    this.startCurveX = startCurveX
-    this.startCurveY = startCurveY
-    this.endCurveX = endCurveX
-    this.endCurveY = endCurveY
-    this.endX = endX
-    this.endY = endY
+    this.start = start
+    this.startCurve = startCurve
+    this.endCurve = endCurve
+    this.end = end
     this.style = new LineStyle(stroke)
     this.linkSockets = new Map<string, LinkSocket<unknown>>()
     this.origin = options.origin ?? null
@@ -68,7 +56,7 @@ export class Link<T> extends BaseEntity<T> {
 
   public addLinkSocket<K>(options: {
     id?: UUID
-    position: Coordinates
+    position: Vector2d
     data?: K
   }): LinkSocket<K> {
     const linkSocket = LinkSocketFactory.Create<K>({

@@ -1,18 +1,18 @@
 import { BaseEntity } from './base.entity'
 import { Link } from './link'
-import { Coordinates, UUID } from '../../interfaces/custom-types'
+import { Vector2d, UUID } from '../../interfaces/custom-types'
 import { CircleStyle } from '../theme/circle-style'
 import { FlobroConfig } from '../config/flobro.config'
 import { Fill } from '../theme/fill'
 import { Stroke } from '../theme/stroke'
 
 export class LinkSocket<T> extends BaseEntity<T> {
-  public position: Coordinates
+  public position: Vector2d
   public parent: Link<unknown> | null
   public style: CircleStyle
 
   constructor(
-    position: Coordinates,
+    position: Vector2d,
     parent: Link<unknown>,
     options: {
       id?: UUID
@@ -44,7 +44,7 @@ export class LinkSocket<T> extends BaseEntity<T> {
     this.parent = link
   }
 
-  public updatePosition(position: Coordinates): void {
+  public updatePosition(position: Vector2d): void {
     this.position = position
   }
 

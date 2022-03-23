@@ -1,5 +1,5 @@
 import { Block } from '../domain/models/builder/block'
-import { Coordinates, HTML, Key, UUID } from '../domain/interfaces/custom-types'
+import { Vector2d, HTML, Key, UUID } from '../domain/interfaces/custom-types'
 
 export class BlockFactory {
   private static _definitions: Map<
@@ -8,7 +8,7 @@ export class BlockFactory {
       id?: UUID
       title: string
       content: HTML
-      position: Coordinates
+      position: Vector2d
       data?: unknown
     }
   > = new Map<
@@ -17,7 +17,7 @@ export class BlockFactory {
       id?: UUID
       title: string
       content: HTML
-      position: Coordinates
+      position: Vector2d
       data?: unknown
     }
   >()
@@ -31,7 +31,7 @@ export class BlockFactory {
       id?: UUID
       title: string
       content: HTML
-      position: Coordinates
+      position: Vector2d
       data?: T
     },
     saveAsDefinition = false
@@ -50,7 +50,7 @@ export class BlockFactory {
     })
   }
 
-  public static Spawn<T>(key: string, position: Coordinates): Block<T> {
+  public static Spawn<T>(key: string, position: Vector2d): Block<T> {
     if (!this._definitions.has(key)) {
       throw new Error(
         `Could not spawn a node for the node definition with key "${key}". Please make sure you've registered the definition using the RegisterDefinition method on this Factory`
@@ -80,7 +80,7 @@ export class BlockFactory {
       id?: UUID
       title: string
       content: HTML
-      position: Coordinates
+      position: Vector2d
       data?: T
     }
   ): void {

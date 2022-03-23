@@ -1,7 +1,7 @@
 import { BaseEntity } from './base.entity'
 import { Link } from './link'
 import { LinkFactory } from '../../../factory/link.factory'
-import { Side, UUID } from '../../interfaces/custom-types'
+import { Side, UUID, Vector2d } from '../../interfaces/custom-types'
 import { Block } from './block'
 import { CircleStyle } from '../theme/circle-style'
 import { Fill } from '../theme/fill'
@@ -48,14 +48,10 @@ export class BlockSocket<T> extends BaseEntity<T> {
   public addLink<K>(
     options: {
       id?: UUID
-      startX: number
-      startY: number
-      startCurveX: number
-      startCurveY: number
-      endCurveX: number
-      endCurveY: number
-      endX: number
-      endY: number
+      start: Vector2d
+      startCurve: Vector2d
+      endCurve: Vector2d
+      end: Vector2d
       data?: K
     },
     setting: 'origin' | 'target'

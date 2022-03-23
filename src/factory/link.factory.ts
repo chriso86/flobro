@@ -1,5 +1,5 @@
 import { Link } from '../domain/models/builder/link'
-import { UUID } from '../domain/interfaces/custom-types'
+import { UUID, Vector2d } from '../domain/interfaces/custom-types'
 import { BlockSocket } from '../domain/models/builder/block.socket'
 
 export class LinkFactory {
@@ -9,27 +9,19 @@ export class LinkFactory {
 
   public static Create<T>(options: {
     id?: UUID
-    startX: number
-    startY: number
-    startCurveX: number
-    startCurveY: number
-    endCurveX: number
-    endCurveY: number
-    endX: number
-    endY: number
+    start: Vector2d
+    startCurve: Vector2d
+    endCurve: Vector2d
+    end: Vector2d
     origin?: BlockSocket<unknown>
     target?: BlockSocket<unknown>
     data?: T
   }): Link<T | null> {
     return new Link<T>(
-      options.startX,
-      options.startY,
-      options.startCurveX,
-      options.startCurveY,
-      options.endCurveX,
-      options.endCurveY,
-      options.endX,
-      options.endY,
+      options.start,
+      options.startCurve,
+      options.endCurve,
+      options.end,
       {
         id: options.id,
         data: options.data,

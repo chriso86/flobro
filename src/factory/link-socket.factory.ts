@@ -1,5 +1,5 @@
 import { LinkSocket } from '../domain/models/builder/link.socket'
-import { Coordinates, UUID } from '../domain/interfaces/custom-types'
+import { Vector2d, UUID } from '../domain/interfaces/custom-types'
 import { Link } from '../domain/models/builder/link'
 
 export class LinkSocketFactory {
@@ -9,7 +9,7 @@ export class LinkSocketFactory {
 
   public static Create<T>(options: {
     id?: UUID
-    position: Coordinates
+    position: Vector2d
     parent: Link<unknown>
     data?: T
   }): LinkSocket<T> {

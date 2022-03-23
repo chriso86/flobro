@@ -6,7 +6,7 @@ export type Url = string
 export type Decimal = number
 export type UnitOfMeasure = number | string // number is for "px"
 export type Side = 'in' | 'out'
-export type Coordinates = { x: number; y: number }
+export type Vector2d = { x: number; y: number }
 export type Class<T> = {
   new (...args: unknown[]): T
 }

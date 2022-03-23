@@ -217,26 +217,18 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       const linkData = {
         link: true,
       }
-      const startX = 1
-      const startY = 2
-      const startCurveX = 10
-      const startCurveY = 20
-      const endCurveX = 30
-      const endCurveY = 40
-      const endX = 3
-      const endY = 4
+      const start = { x: 1, y: 2 }
+      const startCurve = { x: 10, y: 22 }
+      const endCurve = { x: 30, y: 40 }
+      const end = { x: 3, y: 4 }
       const link = originSocket.addLink(
         {
           id: linkId,
           data: linkData,
-          startX,
-          startY,
-          startCurveX,
-          startCurveY,
-          endCurveX,
-          endCurveY,
-          endX,
-          endY,
+          start,
+          startCurve,
+          endCurve,
+          end,
         },
         'origin'
       )
@@ -255,14 +247,10 @@ test('Create two blocks with two sockets (each side), and connect them', () => {
       // Test link
       expect(link.id).toEqual(linkId)
       expect(link.data).toEqual(linkData)
-      expect(link.startX).toEqual(startX)
-      expect(link.startY).toEqual(startY)
-      expect(link.startCurveX).toEqual(startCurveX)
-      expect(link.startCurveY).toEqual(startCurveY)
-      expect(link.endCurveX).toEqual(endCurveX)
-      expect(link.endCurveY).toEqual(endCurveY)
-      expect(link.endX).toEqual(endX)
-      expect(link.endY).toEqual(endY)
+      expect(link.start).toEqual(start)
+      expect(link.startCurve).toEqual(startCurve)
+      expect(link.endCurve).toEqual(endCurve)
+      expect(link.end).toEqual(end)
       expect(link.linkSockets).toEqual(new Map<UUID, LinkSocket<unknown>>())
       expect(link.origin.id).toEqual(originSocket.id)
       expect(link.target.id).toEqual(targetSocket.id)

@@ -1,7 +1,7 @@
 import { IState } from '../../interfaces/state.interface'
 import { BlockFactory } from '../../../factory/block.factory'
 import { Block } from './block'
-import { Coordinates, HTML, UUID } from '../../interfaces/custom-types'
+import { Vector2d, HTML, UUID } from '../../interfaces/custom-types'
 import { FlobroConfig } from '../config/flobro.config'
 import { ServiceContainer } from '../../services/service-container'
 import { EventService } from '../../services/event.service'
@@ -55,7 +55,7 @@ export class Flobro {
     id?: UUID
     title: string
     content: HTML
-    position: Coordinates
+    position: Vector2d
     data: T
   }): Block<T | null> {
     const block = BlockFactory.Create(options)

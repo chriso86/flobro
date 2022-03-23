@@ -1,5 +1,4 @@
 import { UUID } from '../../interfaces/custom-types'
-import { CircleStyle } from '../theme/circle-style'
 import { Helper } from '../../../utils/helper'
 
 export abstract class BaseEntity<T> {

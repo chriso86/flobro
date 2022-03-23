@@ -1,6 +1,6 @@
 import { BlockSocketFactory } from '../../../factory/block-socket.factory'
 import { NotImplementedException } from '../../../utils/error-constants'
-import { Coordinates, HTML, Side, UUID } from '../../interfaces/custom-types'
+import { Vector2d, HTML, Side, UUID } from '../../interfaces/custom-types'
 import { BlockStyle } from '../theme/block-style'
 import { BlockSocket } from './block.socket'
 import { FlobroConfig } from '../config/flobro.config'
@@ -11,7 +11,7 @@ import { BaseEntity } from './base.entity'
 export class Block<T> extends BaseEntity<T> {
   public title: string
   public content: HTML
-  public position: Coordinates
+  public position: Vector2d
   public style: BlockStyle
   public inSockets: Map<UUID, BlockSocket<unknown>>
   public outSockets: Map<UUID, BlockSocket<unknown>>
@@ -19,7 +19,7 @@ export class Block<T> extends BaseEntity<T> {
   constructor(
     title: string,
     content: HTML,
-    position: Coordinates,
+    position: Vector2d,
     options: {
       id?: UUID
       data?: T
@@ -95,7 +95,7 @@ export class Block<T> extends BaseEntity<T> {
     return false
   }
 
-  public updatePosition(position: Coordinates): void {
+  public updatePosition(position: Vector2d): void {
     this.position = position
   }
 
